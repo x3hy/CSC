@@ -1,23 +1,32 @@
 <?php
-require __DIR__ . "/library.php";
+require __DIR__ . "/post_library.php";
 
 // Public user class for storing information for a
 // user.
 class User {
+	// Information
 	public $id;
 	public $password;
 	public $username;
-	public $display;
+	public $display_name;
+	public $note;
 	
 	public function load_user($id){
 		$this->$user_id = $id;
 	}
 	
 	// Admin stuff
-	public function is_admin(){}
-	public function make_admin(){}
-	public function revoke_admin(){}
-	public function note(){}
+	public function is_admin(){
+		
+	}
+	public function make_admin(){
+		// Makes user an admin
+		return insert_into_table("admins",[
+			"user_id" => $id			
+		]);
+	}
+	public function revoke_admin(){
+	}
 	public function set_note($text){}
 	
 	// Orders
@@ -36,15 +45,6 @@ class User {
 	public function total_debt(){}
 	public function total_paid(){}
 	
-	// Information
-	public function password(){
-		return $this->password;
-	}
-	public function display_name(){
-		return $this->display;
-	}
-	public function username(){
-		return $this->username;
-	}
+
 }
 ?>

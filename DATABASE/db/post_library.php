@@ -10,7 +10,7 @@ if (!defined('DB_LIBRARY')) {
 	$reset_file = "db_reset.php";
 	
 	// Confirm that the database has been initialised.
-	$tables = ["users", "orders", "admins", "transactions"];
+	$tables = ["users", "orders", "admins", "transactions", "sessions"];
 	if (!exist_tables($tables))
 	  {
 		echo "Some tables didn't exist, to fix this the database will be reset.<br><br>";

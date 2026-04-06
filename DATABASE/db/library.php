@@ -189,7 +189,84 @@ function insert_into_table($table_name, array $data)
       }
 }
 
+// wrapper to generate a password based off of
+// a string.
 function generate_password($raw){
 	return hash('sha256', $raw);
+}
+
+// Handles session, if $last_session is null then a session will
+// authenticated and generated based off of the $username and
+// $password.
+function handle_session($username, $password, $last_session){
+	
+}
+
+// Gets a valued array of items from a $table based on the
+// given $id. returns the $props as a valued array.
+// E.g
+// [
+//     "my_prop_name" => "value from table!"
+// ]
+function get_property_by_id($table, $id, array $props) {
+    global $conn;
+
+    $columns = implode(', ', $props);
+
+    $stmt = $conn->prepare("
+        SELECT $columns 
+        FROM $table 
+        WHERE id = ?
+    ");
+
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $values = $result->fetch_assoc();
+
+    $return = [];
+
+    foreach ($props as $prop) {
+        $return[$prop] = $values[$prop] ?? null;
+    }
+
+    return $return;
+}
+
+// same as the other function, but this one gets properties
+// across ALL rows.
+function get_properties_from_table($table, array $props) {
+    global $conn;
+
+    if (empty($props)) {
+        return [];
+    }
+
+    $columns = implode(', ', $props);
+
+    $stmt = $conn->prepare("
+        SELECT $columns 
+        FROM $table
+    ");
+
+    if (!$stmt) {
+        return ["error" => "Prepare failed: " . $conn->error];
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $item = [];
+        foreach ($props as $prop) {
+            $item[$prop] = $row[$prop] ?? null;
+        }
+        $data[] = $item;
+    }
+
+    $stmt->close();
+
+    return $data;
 }
 ?>

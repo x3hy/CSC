@@ -10,6 +10,15 @@ delete_tables($tables);
 
 echo "<br>Creating tables:<br>";
 
+// Create the sessions table
+create_table(
+"sessions", "
+	id $ID_VALUE,
+	user_id $FOREIGN_ID_VALUE,
+	isssued $TIMESTAMP_VALUE,
+	hash $PASSWORD_VALUE
+");
+
 // Create the users table
 create_table(
 "users", "
@@ -90,7 +99,6 @@ $user_id =
 		"password" => generate_password("password123")
 	]
 );
-
 
 // Close connection to db
 close_db_connection();

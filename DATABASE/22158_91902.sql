@@ -3,7 +3,7 @@
 -- Host: localhost	Database: 22158_91902
 -- ------------------------------------------------------
 -- Server version 	8.0.45-0ubuntu0.22.04.1
--- Date: Tue, 31 Mar 2026 09:03:09 +0000
+-- Date: Sat, 04 Apr 2026 00:14:01 +0000
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -70,12 +70,41 @@ CREATE TABLE `orders` (
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `orders` VALUES (1,'test123','test1234','2026-03-31 08:09:14',0);
+INSERT INTO `orders` VALUES (1,'test123','test1234','2026-04-04 00:08:07',0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
 -- Dumped table `orders` with 1 row(s)
+--
+
+--
+-- Table structure for table `sessions`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `isssued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `sessions` with 0 row(s)
 --
 
 --
@@ -106,7 +135,7 @@ CREATE TABLE `transactions` (
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `transactions` VALUES (1,1,1,'2026-03-31 08:09:14',123.12,1);
+INSERT INTO `transactions` VALUES (1,1,1,'2026-04-04 00:08:07',123.12,1);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -155,4 +184,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Tue, 31 Mar 2026 09:03:09 +0000
+-- Dump completed on: Sat, 04 Apr 2026 00:14:01 +0000
