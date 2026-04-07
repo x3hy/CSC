@@ -195,13 +195,6 @@ function generate_password($raw){
 	return hash('sha256', $raw);
 }
 
-// Handles session, if $last_session is null then a session will
-// authenticated and generated based off of the $username and
-// $password.
-function handle_session($username, $password, $last_session){
-	
-}
-
 // Gets a valued array of items from a $table based on the
 // given $id. returns the $props as a valued array.
 // E.g
@@ -268,5 +261,36 @@ function get_properties_from_table($table, array $props) {
     $stmt->close();
 
     return $data;
+}
+
+/*
+This function will search for a given session value
+in the sessions table, if it finds it then it will return
+true meaning that the session is valid (it exists) or if
+the session is not found then this function will return 0
+meaning the session is INVALID!. The statements of this
+function are kept hard-coded to disallow any medling.
+*/
+function is_valid_session($session){
+    global $conn;
+    $stmt = $conn->prepare("
+        SELECT *
+        FROM sessions
+    ");
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+	$ret = 0;
+	
+    while ($row = $result->fetch_assoc()) {
+        $item = [];
+		if ($row["hash"] == "$session"){
+			$ret = 1;
+			break;
+		}
+    }
+
+	$stmt->close();
+    return $ret;
 }
 ?>

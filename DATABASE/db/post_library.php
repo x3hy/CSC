@@ -14,10 +14,16 @@ if (!defined('DB_LIBRARY')) {
 	if (!exist_tables($tables))
 	  {
 		echo "Some tables didn't exist, to fix this the database will be reset.<br><br>";
-		require __DIR__ . "/$reset_file";
+		try {
+			require __DIR__ . "/$reset_file";
+			echo "<br>The '$reset_file' file has been run, this should have fixed any issues.<br>";
+			echo "Please reload the page now, if the page shows up blank then everything has worked.<br>";
+			header("Location: " . $_SERVER['PHP_SELF']);
+		} catch (Exception $e){
+			echo "Fatal error occured ($e) running $reset_file. You're on your own now.<br>";
+		}
 		
-		echo "<br>The '$reset_file' file has been run, this should have fixed any issues.<br>";
-		echo "Please reload the page now, if the page shows up blank then everything has worked.<br>";
+		
 	  }
 	// Library has been loaded properly.
 }

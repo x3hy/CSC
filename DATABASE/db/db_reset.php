@@ -11,13 +11,7 @@ delete_tables($tables);
 echo "<br>Creating tables:<br>";
 
 // Create the sessions table
-create_table(
-"sessions", "
-	id $ID_VALUE,
-	user_id $FOREIGN_ID_VALUE,
-	isssued $TIMESTAMP_VALUE,
-	hash $PASSWORD_VALUE
-");
+
 
 // Create the users table
 create_table(
@@ -27,6 +21,15 @@ create_table(
 	username $USERNAME_VALUE,
 	password $PASSWORD_VALUE,
 	display $DISPLAY_VALUE
+");
+
+create_table(
+"sessions", "
+	id $ID_VALUE,
+	user_id $FOREIGN_ID_VALUE,
+	isssued $TIMESTAMP_VALUE,
+	hash $PASSWORD_VALUE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ");
 
 // Create the orders table
@@ -99,6 +102,11 @@ $user_id =
 		"password" => generate_password("password123")
 	]
 );
+
+insert_into_table("sessions", [
+	"user_id" => $user_id,
+	"hash" => "test123"
+]);
 
 // Close connection to db
 close_db_connection();
