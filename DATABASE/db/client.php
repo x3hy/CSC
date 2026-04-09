@@ -34,18 +34,11 @@ function client_exit($status, $message){
 if ($data !== null && is_array($data))
   {
 	
-	// The json data MUST contain a "session" value
-	if (!isset($data["session"]))
-		client_exit(1, "Session token not provided, access forbidden");
-	
-	if (!is_valid_session($data["session"]))
-		client_exit(1, "Session token was provided but is invalid");
-	
 	// the json data should contain a "call" value,
 	// this references the function the frontend wants
 	// to run. also given must be the "content" value
 	// which holds the data given to the function.
-	if (!isset($data["call"]) || !isset($data["content"]))
+	if (!isset($data["call"]) || !isset($data["content"]) || !isset($data[""])
 		client_exit(1, "Required parameters not given:");
 	
 	try
@@ -55,10 +48,9 @@ if ($data !== null && is_array($data))
 		client_exit(0, 
 			match ($data["call"])
 			  {
-				// validation and verification
-				"password" => regex_password($data["content"]),
-				"username" => regex_username($data["content"]),
-				"display"  => regex_display  ($data["content"]),
+				"username" => validate_username($data["content"]),
+				"sign_in" => generate_session($data["content"]["username"], $data["content"]["password"]),
+				"display"  => validate_display($data["content"]),
 				 
 				// ping!
 				"ping" => ""
@@ -70,7 +62,6 @@ if ($data !== null && is_array($data))
     	client_exit(1, "$e");
 	  }
   }
-	
 client_exit(1, "No JSON data given");
 
 /*

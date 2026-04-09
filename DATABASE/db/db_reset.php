@@ -23,15 +23,6 @@ create_table(
 	display $DISPLAY_VALUE
 ");
 
-create_table(
-"sessions", "
-	id $ID_VALUE,
-	user_id $FOREIGN_ID_VALUE,
-	isssued $TIMESTAMP_VALUE,
-	hash $PASSWORD_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-");
-
 // Create the orders table
 create_table(
 "orders", "

@@ -1,0 +1,59 @@
+/* Settings */
+:root {
+	--foreground: black;
+	--background: white;
+	--surface: rgba(0,0,0,0.5);
+	--surface-foreground: white;
+	--sign-up: "Sign Up";
+	--sign-in: "Sign In";
+	--error-foreground: red;
+}
+
+* {
+	border-width:0px;
+	border-radius:0px;
+	outline:none;
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	margin:0px;
+	padding:0px;
+}
+
+input, button {
+	margin:5px;
+	padding:5px;
+	box-sizing:border-box;
+	background: var(--surface);
+	color: var(--surface-foreground);
+}
+a {color: var(--foreground);}
+
+/* Login form styles */
+.login-page {
+	height:50vh;
+	padding-top:15vh;
+	
+	#login-form {
+		width:fit-content;
+		background:var(--surface);
+		transform: translateX(-50%);
+		margin-left:50vw;
+
+		#login-form-errors {color: var(--error-foreground);}
+		#login-form-switch::before {content: var(--sign-in);}
+		#login-form-header::before {content: var(--sign-up);}
+		.sign-in {display:none;}
+	}
+
+	.form-sign-in {
+		#login-form-switch::before {content: var(--sign-up) !important;}
+		#login-form-header::before {content: var(--sign-in) !important;}
+		.sign-up {
+			opacity:0;
+			user-select:none;
+		}
+	}
+}

@@ -263,34 +263,102 @@ function get_properties_from_table($table, array $props) {
     return $data;
 }
 
-/*
-This function will search for a given session value
-in the sessions table, if it finds it then it will return
-true meaning that the session is valid (it exists) or if
-the session is not found then this function will return 0
-meaning the session is INVALID!. The statements of this
-function are kept hard-coded to disallow any medling.
-*/
-function is_valid_session($session){
-    global $conn;
-    $stmt = $conn->prepare("
-        SELECT *
-        FROM sessions
-    ");
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-	$ret = 0;
-	
-    while ($row = $result->fetch_assoc()) {
-        $item = [];
-		if ($row["hash"] == "$session"){
-			$ret = 1;
-			break;
-		}
+function validate_username($username)
+{
+    if (!is_string($username)) {
+        return "Username must be a string.";
     }
 
-	$stmt->close();
-    return $ret;
+    $username = trim($username);
+
+    // Length checks
+    if (strlen($username) < 3) {
+        return "Username must be at least 3 characters long.";
+    }
+    if (strlen($username) > 32) {
+        return "Username cannot be longer than 32 characters.";
+    }
+
+    // Regex: Only a-z, A-Z, 0-9, and _
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        return "Username can only contain letters, numbers, and underscores (_). No spaces or special characters allowed.";
+    }
+
+    return true;
+}
+
+function validate_display($display)
+{
+    if (!is_string($display)) {
+        return "Display name must be a string.";
+    }
+
+    $display = trim($display);
+
+    // Length checks
+    if (strlen($display) < 2) {
+        return "Display name must be at least 2 characters long.";
+    }
+    if (strlen($display) > 64) {
+        return "Display name cannot be longer than 64 characters.";
+    }
+
+    // Regex: Letters, numbers, spaces, and allowed symbols: !@#$%^&*()_+-=.,?
+    if (!preg_match('/^[a-zA-Z0-9\s!@#$%^&*()_+\-=\.,?]+$/', $display)) {
+        return "Display name can only contain letters, numbers, spaces, and these symbols: ! @ # $ % ^ & * ( ) _ + - = . , ?";
+    }
+
+    return true;
+}
+
+// returns a users data on login.
+function login_user(string $username, string $hashed_password)
+{
+    global $conn;
+
+    // Basic validation
+    if (empty($username) || empty($hashed_password)) {
+        return false;
+    }
+
+    // Only allow safe username characters (matching your style)
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        return false;
+    }
+
+    // Prepare and execute query
+    $stmt = $conn->prepare("
+        SELECT id, note, username, password, display 
+        FROM users 
+        WHERE username = ?
+        LIMIT 1
+    ");
+
+    if (!$stmt) {
+        // echo "Prepare failed: " . $conn->error;   // for debugging
+        return false;
+    }
+
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        $stmt->close();
+        return false;
+    }
+
+    $user = $result->fetch_assoc();
+    $stmt->close();
+
+    // Direct comparison since password is already hashed
+    if ($hashed_password !== $user['password']) {
+        return false;
+    }
+
+    // Remove password from returned data for security
+    unset($user['password']);
+
+    return $user;
 }
 ?>

@@ -1,14 +1,45 @@
 <!DOCTYPE html>
-<!-- This is the "login" page I suppose -->
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>Hello World!</title>
-		<link rel="stylesheet" href="src/styles.css">
-		<script src="src/public/index.js" defer></script>
-	</head>
-	<body>
-	</body>
+<head>
+	<meta charset="UTF-8">
+	<title id="title"></title>
+	<link rel=stylesheet href="src/styles.css">
+	<script defer src="src/public/index.js"></script>
+	<script defer src="src/public/login.js"></script>
+</head>
+<body class="login-page">
+
+	<!-- Login form -->
+	<form id="login-form" class="form-sign-in">
+		<center>
+			<h2 id="login-form-header"></h2>
+		</center>
+
+		<!-- *Name options -->
+		<input type="text" placeholder="Username" name="username" autocomplete="username">
+		<input type="text" placeholder="Display Name" class="sign-up" name="displayname">
+		<br>
+
+		<!-- Password options -->
+		<input type="password" placeholder="Password" name="password" autocomplete="password">
+		<input type="password" placeholder="Confirm Password" class="sign-up" name="passwordconfirm">
+		<br>
+
+		<!-- "terms" checkbox -->
+		<input type="checkbox" class="sign-up" id="login-form-terms" name="terms">
+		<label for="login-form-terms" class="sign-up">
+			<a href="test123">
+				<em>Terms</em>
+			</a>
+		</label>
+		<br>
+
+		<!-- Action buttons -->
+		<button id="login-form-submit">
+			<b>Submit</b>
+		</button>
+		<button id="login-form-switch"></button>
+		<div id="login-form-errors"></div>
+	</form>
+</body>
 </html>

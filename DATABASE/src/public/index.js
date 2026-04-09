@@ -9,6 +9,11 @@ const __DIR__ = (function() {
 async function POST(content, callback = console.error) {
 	const validate_php_file= __DIR__ + "/../../db/client.php";
 	let out;
+	
+	content["username"] = false;
+	content["password"] = false;
+	console.log(`sending ${ JSON.stringify(content)} to server.`);
+		
 	try {
 		// Post the data to `validate_php_file`
 		out = await fetch(validate_php_file, {
@@ -16,7 +21,6 @@ async function POST(content, callback = console.error) {
     		headers: {'Content-Type': 'application/json'},
     		body: JSON.stringify(content)
 		});
-		
 		// Convert it to JSON
 		out = await out.json();
 	} catch (err) {
@@ -24,9 +28,14 @@ async function POST(content, callback = console.error) {
 		return undefined;
 	}
 	
-	// Return the response
+	// Return the response and set the session id token to the newly
+	// generated token.
+	console.log(`received ${await out} from server.`);
 	return await out;
 }
+
+/*
 (async () => {
 	console.log(await POST({"call": "ping", "content" : "", "session": "test123",}));
 })();
+*/
