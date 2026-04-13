@@ -1,14 +1,14 @@
 <?php
 // Load the library file, it contains all of the 
 // semantic functions used in this file.
-require __DIR__ . "/post_library.php";
+require __DIR__ . "/include.php";
 
 
 echo "Deleting tables:<br>";
 delete_tables($tables);
 
 
-echo "<br>Creating tables:<br>";
+echo "<br><b>Creating tables:</b><br>";
 
 // Create the sessions table
 
@@ -56,7 +56,7 @@ create_table(
 ");
 
 
-echo "<br>Inserting Data:<br>";
+echo "<br><b>Inserting Data:</b><br>";
 
 // Create a new customer user
 $user_id = 
@@ -84,7 +84,6 @@ insert_into_table("transactions", [
 	"is_paid" => true
 ]);
 
-
 // Create a new customer user
 $user_id = 
 	insert_into_table("users", [
@@ -94,10 +93,29 @@ $user_id =
 	]
 );
 
-insert_into_table("sessions", [
-	"user_id" => $user_id,
-	"hash" => "test123"
+// make user[1] an admin:
+insert_into_table("admins", [
+	"user_id" => $user_id
 ]);
+
+
+echo "<br><b>Checking permissions:<br>User data:</b>";
+# fetch all of the users passwords and usernames:
+$user_data = get_properties_from_table("users", ["password", "username", "id"]);
+
+echo "<pre>";
+var_dump($user_data);
+echo "</pre>";
+
+echo "Is user[0] an admin?<br>";
+var_dump(is_user_admin($user_data[0]["username"], $user_data[0]["password"]));
+
+echo "<br><br>Is user[1] an admin?<br>";
+var_dump(is_user_admin($user_data[1]["username"], $user_data[1]["password"]));
+
+echo "<br><br>Testing password generator function:<br>";
+echo "Using test password <i>\"password\"</i><br>";
+echo generate_password("password");
 
 // Close connection to db
 close_db_connection();

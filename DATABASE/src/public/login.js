@@ -61,31 +61,37 @@ _form.addEventListener("submit", (e)=>{
 
 		delete data.passwordconfirm;
 		
-		// VERIFICATION THINGS: 
-		
+		// VERIFICATION THINGS:
+
 		// Now to verify with the server to check if the props are valid
 		if (!(async () => {
-			// check username:
-			const username_resp = await POST(
-				{"call": "username", "content" : data.username}
-			);
-			if(await username_resp.message != true){
-				_form_errors.innerText = await username_resp.message;
-				return false;
-			}
-			
-			// check display name (if applicable)
 			if (mode){
-				const display_resp = await POST(
-					{"call": "display", "content" : data.displayname}
-				);
+				// check username:
+				const username_resp = validate_username(data.username);
+				if (await username_resp != true){
+					_form_errors.innerText = await username_resp;
+					return false;
+				}
+				
+				const display_resp = validate_display(data.display);
 				if(await display_resp.message != true){
 					_form_errors.innerText = await display_resp.message;
 					return false;
 				}
+				
+				// Now both the username and displayname have been validated. The
+				// password and username have been provided, we can now move over
+				// to the sign in process.	
 			}
+			
+			const ret = sign_in(await data.username, data.password);
+			if (ret != true){
+				_form_errors.innerText = await ret;
+				return false;
+			}
+			
 			return true;
 		})()) return;
+
 	}, 200);
-	
 });

@@ -19,7 +19,7 @@ private resource so that a user cannot see this.
 header('Content-Type: application/json');
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
-require __DIR__ .'/post_library.php';
+require __DIR__ .'/include.php';
 
 // return data "struct"
 function client_exit($status, $message){
@@ -33,116 +33,74 @@ function client_exit($status, $message){
 // if this file was given any data:
 if ($data !== null && is_array($data))
   {
-	
 	// the json data should contain a "call" value,
 	// this references the function the frontend wants
 	// to run. also given must be the "content" value
 	// which holds the data given to the function.
-	if (!isset($data["call"]) || !isset($data["content"]) || !isset($data[""])
+	if (!isset($data["call"]) || !isset($data["content"]))
 		client_exit(1, "Required parameters not given:");
+
+	// Validate the password and username and admin status peacefully
+	$is_validated = false;
+	if(isset($data["password"]) != false && isset($data["username"]) != false)
+	  {
+		if (validate_user($data["username"], $data["password"]) == false)
+			client_exit(1, "Username and password is incorrect");
+		$is_validated = true;
+		$is_admin = is_user_admin($data["username"], $data["password"]);
+	  }
 	
-	try
-	  {
-		// run the given mode as a function, then return
-		// the value.
-		client_exit(0, 
-			match ($data["call"])
-			  {
-				"username" => validate_username($data["content"]),
-				"sign_in" => generate_session($data["content"]["username"], $data["content"]["password"]),
-				"display"  => validate_display($data["content"]),
+	// the following is now a three-ring permissions scheme, the three rings are
+	// as follows:
+	// ring 0 - basic regex and ping calls, does not require a username or password
+	// ring 1 - user roles (create orders, view orders blah blah blah), requires a username and password.
+	// ring 2 - admin roles (order notes and user notes) requires a username and password AND that the
+	//          user is a valid admin.
+		
+	// run the given mode as a function, then return
+	// the value. Below are some basic calls that do
+	// not require valid ID.
+	$value = match ($data["call"])
+	{
+		"username" => validate_username($data["content"]),
+		"display"  => validate_display($data["content"]),
 				 
-				// ping!
-				"ping" => ""
-			  }
-		);
-	  }
-	catch (\UnhandledMatchError $e)
-	  {
-    	client_exit(1, "$e");
-	  }
+		// ping!
+		"ping" => "",
+		default => null
+	};
+	
+	if ($value !== null)
+		client_exit(0, $value);
+	
+	// catch invalid permissions
+	if (!$is_validated)
+		client_exit(1, "Access is forbidden, maybe the call was wrong..  (ring 1 access denied)");
+	
+	// Now these are the permission-locked features:
+	$value = match ($data["call"])
+	{
+		"auth_ping" => "",
+		default => null
+	};
+	
+	if ($value !== null)
+		client_exit(0, $value);
+	
+	// is the user an admin
+	if ($is_admin == false)
+		client_exit(1, "Access is forbidden, maybe the call was wrong.. (ring 2 access denied)");
+	
+	$value = match ($data["call"])
+	{
+		"set_order_note" => "",
+		"set_user_note" => "",
+		default => null
+	};
+	
+	if ($value == null)
+		client_exit(1, "invalid call");
+	
   }
 client_exit(1, "No JSON data given");
-
-/*
-A great idea for server security is to be very very broad with your server side programming.
-this is a good example, this message and code is returned if the number of users returned
-from the query is not exactly equal to one, the idea is that we don't want to give the client
-any information other than whats required.
-
-Reasoning for using an unsigned bit, ints in computer science are of course represented in 
-binary. "signed" ints have a split where half of the possible numbers are actually negative,
-whereas in "unsigned" ints do not have any negative numbers, for future reference an int that
-cannot have a negative number is unsigned and a number that can have negative numbers are 
-signed. This is because the "signed" keyword here is refering to if the numbers have a spare
-bit for telling the computer if the number is negative or not, the sign refers to the minus
-sign that is prefixed onto negative numbers.
-
-TL;DR
-Signed VS unsigned numbers: signed ints can be negative and unsigned ints cannot
---------------------------------------------------------------------------------------
-The session is validated by generating a secure randomised hash that is provided by the client
-to the server, the server then searches this hash within the sessions file which will allow us
-to authenticate any new requests to the server. the hash is then stored in the clients local 
-storage. this is far more secure than holding the username or password of the user in local 
-storage as anyone can just go and change the local storage and sign into anyones account. This
-is a basic implementation and has not been tested.
-	
-Each session row has the hash, the date it was issued and the total count of requests that 
-token as been used for. When validating a session this file will check to see if the date 
-issued has execeded a certain limit and it will remove the token. If alternatively the count
-of times the token has been used has exceeded a certain hard-coded limit then the server will
-also remove the token.
-
-Note that the session row contains no information as to when the token will expire, this is
-all held exclusivly as hard-coded values on the server. This REDUCES the chances for a data
-attack where someone changes the values of tokens in the server. What I mean by this is that 
-if each token had an expirery date then some hacker could come in and potentially change the
-expirey date to some time in the far far future, if we exclude an expirey date and instead 
-only hold a issued date then the hacker would have to keep coming back over and over again to
-change the data periodically, this will end up increasing the overall chance for this hacker
-to be found out.
-
-Of course this is still quite insecure, this system is good but it could be better with time
-based db snapshots that way the integrity of the data can be confirmed from multiple sources
-instead of one database.
-
-The other value is the count of total requests the token has been used for. This property is
-also hard-coded, note that the count check should be a backup to the time check!
-
----------------------------------------------------------------------------------------------
-
-Now this session system is alright, static tokens however are not alright, I won't have enough 
-time to implement what security I want too. I've been told my system is overkill for tokens 
-but truthfully this is just a fraction of what I would make if I was actually writing a secure
-website.
-
-By static tokens I mean tokens that do not change over the course of its lifetime, when the 
-expiery date is hit then the token is removed. Simple. Now instead of this a rolling-code system
-could be implemented. Think of it this way, each time we send a request with the token and the 
-tokens expiry date hasn't been exceeded then the server will regenerate a new token, delete 
-the old one and then continue, that way each request is AUTHENTICATED but each token is 
-completly different.
-
-The tokens would need another property like, "original_issue_date" along side the "issue_date" 
-because now the token has a overall lifetime (time since the first request token was created)
-and the local token lifetime (the current iterated token string).
-
-This system in theory isent too dificult, just upgrade the token tables and then upgrade the
-token fetch function to return a new token. So now that I think about it I could actually do
-this..
-
-And by the way, if anyone is reading this and thinkthing this is SO ADVANCED BLAH BLAH BLAH,
-THIS IS OVERKILL FOR ANYYYY WEBSITE!!! Silence wimp this is actually the bare minimum for 
-any website made after 1999. Any other method is INSECURE and I'll laugh at you when your 
-website fails basic penetration testing but my SCHOOL PROJECT withstands the force of a
-thousand storms...
-
-TL;DR 
-This is good but it could be better.
-				
-Note: Make a php file thats one job is to verify a given token and return either true or 
-false. this file needs to be portable so that it can simply be included at the top of any
-new pages or done through a js client api (so that the file can be a .html not a .php).
-*/
 ?>

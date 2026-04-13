@@ -59,7 +59,7 @@ function delete_table($name)
 	  {
 		if (!exist_table($name))
 		  {
-			echo "Table '$name' not deleted (does not exist)<br>";
+			echo "Table '<i>$name</i>' not deleted (does not exist)<br>";
 			return;
 		  }
 		
@@ -70,7 +70,7 @@ function delete_table($name)
         if ($conn->error)
             echo "Error deleting table: " . $conn->error;
 		else
-			echo "Table '$name' deleted successfully<br>";
+			echo "Table '<i>$name</i>' deleted successfully<br>";
 
         // Re-enable foreign key checks
         $conn->query("SET foreign_key_checks = 1");
@@ -131,7 +131,7 @@ function create_table($name, $columns)
 	global $conn;
     if ($conn->query($query) === TRUE)
 	  {
-        echo "Table '$name' created successfully<br>";
+        echo "Table '<i>$name</i>' created successfully<br>";
       }
 	else echo "Error creating table '$name': " . $conn->error;
 }
@@ -176,7 +176,7 @@ function insert_into_table($table_name, array $data)
     if ($stmt->execute())
 	  {
 		$new_id = $conn->insert_id;
-        echo "Data successfully inserted into `$table_name` table.<br>";
+        echo "Data successfully inserted into `<i>$table_name</i>` table.<br>";
         $stmt->close();
         return $new_id;
 		
@@ -312,7 +312,7 @@ function validate_display($display)
 }
 
 // returns a users data on login.
-function login_user(string $username, string $hashed_password)
+function validate_user(string $username, string $hashed_password)
 {
     global $conn;
 
@@ -320,24 +320,17 @@ function login_user(string $username, string $hashed_password)
     if (empty($username) || empty($hashed_password)) {
         return false;
     }
-
-    // Only allow safe username characters (matching your style)
-    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-        return false;
-    }
-
+	
     // Prepare and execute query
     $stmt = $conn->prepare("
-        SELECT id, note, username, password, display 
+        SELECT password, id
         FROM users 
         WHERE username = ?
         LIMIT 1
     ");
 
-    if (!$stmt) {
-        // echo "Prepare failed: " . $conn->error;   // for debugging
+    if (!$stmt) 
         return false;
-    }
 
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -358,7 +351,43 @@ function login_user(string $username, string $hashed_password)
 
     // Remove password from returned data for security
     unset($user['password']);
+    return $user['id'];
+}
 
-    return $user;
+// fetches the users ID from the prior function, then if the id
+// is found in the admins table then it will return the admins id.
+// if not it will return false.
+function is_user_admin(string $username, string $hashed_password)
+{
+	global $conn;
+	$user_id = validate_user($username, $hashed_password);
+	
+	if ($user_id == false)
+		return false;
+	
+	 // Prepare and execute query
+    $stmt = $conn->prepare("
+        SELECT id, user_id
+        FROM admins
+        LIMIT 1
+    ");
+
+    if (!$stmt) 
+        return false;
+	
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        $stmt->close();
+        return false;
+    }
+
+    $admin = $result->fetch_assoc();
+    $stmt->close();
+	
+	if ($user_id !== $admin['user_id'])
+		return false;
+    return $admin['id'];
 }
 ?>
