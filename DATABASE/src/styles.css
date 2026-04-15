@@ -2,13 +2,15 @@
 :root {
 	--foreground: black;
 	--background: white;
+	--accent: cyan;
 	--surface: rgba(0,0,0,0.5);
 	--surface-foreground: white;
 	--sign-up: "Sign Up";
 	--sign-in: "Sign In";
 	--error-foreground: red;
-	--padding: 5px;
+	--padding: 7px;
 	--ui-d-width: 200px;
+	--border-radius: 10px;
 }
 
 * {
@@ -32,17 +34,33 @@ input, button {
 	color: var(--surface-foreground);
 	width: var(--ui-d-width);
 	border: 1px solid var(--foreground);
+	border-radius: var(--border-radius);
 }
+
+input:focus, button:hover {
+	border: 1px solid var(--accent);
+}
+
 a {color: var(--foreground);}
 
 /* Login form styles */
 .login-page {
 	height:50vh;
 	padding-top:15vh;
+
+	.footer {
+		position:absolute;
+		bottom:0;
+		width:100%;
+		text-align:center;
+		opacity:0.5;
+	}
 	
 	#login-form {
 		width:fit-content;
 		background:var(--surface);
+		padding:var(--padding);
+		border-radius: var(--border-radius);
 		transform: translateX(-50%);
 		margin-left:50vw;
 
@@ -52,6 +70,7 @@ a {color: var(--foreground);}
 			box-sizing:border-box;
 			padding:5px;
 			margin:var(--padding);
+			border-radius: var(--border-radius);
 			display:none;
 		}
 		#login-form-switch::before {content: var(--sign-in);}

@@ -73,6 +73,12 @@ _form_switch.addEventListener("click", (e) => {
 
 
 (async ()=>{
+	const server_resp = await ping_server();
+	if (!server_resp.code != 0){
+		set_error("Failed to ping the server, your client is broken or the server is down")
+		return
+	}
+
 	if (await validate_session() == true)
 		open_dashboard();
 })();

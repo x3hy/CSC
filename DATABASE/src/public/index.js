@@ -63,7 +63,7 @@ async function POST(content, callback = console.error) {
 }
 
 // Check if the server is active
-async function server_active(){
+async function ping_server(){
 	const ret = await POST({"call": "ping", "content": ""});
 	if (await ret == "")
 		return true;
@@ -92,9 +92,9 @@ async function sign_in(username, password){
 // Checks if a user has signed in or not already
 async function validate_session(){
 	const sign_in_resp = await POST({"call":"auth_ping"});
-	if (sign_in_resp.status != 0)
-		return false;
-	return true;
+	if (sign_in_resp.status == 0)
+		return true;
+	return false;
 }
 
 // if a user is not signed in then they will be
@@ -110,4 +110,26 @@ async function validate_session_permanence(){
 function sign_out (){
 	// Clear the users session
 	localStorage.clear();
+}
+
+// Removes all occurances of a pattern
+// if the current user is not authenticated
+async function auth_class_remove(pattern){
+	if (await validate_session() == false){
+		document.querySelectorAll(pattern)
+		.forEach((element) => {
+			element.remove();
+		});
+	}
+}
+
+// Removes all occurances of a pattern
+// if the current user IS authenticated
+async function auth_class_remove(pattern){
+	if (await validate_session() == true){
+		document.querySelectorAll(pattern)
+		.forEach((element) => {
+			element.remove();
+		});
+	}
 }
