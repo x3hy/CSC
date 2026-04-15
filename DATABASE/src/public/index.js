@@ -65,17 +65,21 @@ async function POST(content, callback = console.error) {
 // Check if the server is active
 async function ping_server(){
 	const ret = await POST({"call": "ping", "content": ""});
-	if (await ret == "")
+	if (await ret.status == 0)
 		return true;
 	return false;
 }
 
 function open_sign_in(){
-	location.href = __DIR__ + "/../../index.html";
+	location.href = __DIR__ + "/../../sign_in.html";
 }
 
 function open_dashboard(){
 	location.href = __DIR__ + "/../../dashboard.html";
+}
+
+function open_home(){
+	location.href = __DIR__ + "/../../";
 }
 
 // Signs in a user
@@ -97,6 +101,30 @@ async function validate_session(){
 	return false;
 }
 
+async function get_name() {
+    const validate_resp = await validate_session();
+    const auth = get_local_auth();
+    if (validate_resp === true) {
+        const resp = await POST({"call": "get_display","content": auth["username"]});
+        if (resp.status !== 0)
+            return auth["username"];
+        return resp.message;
+    }
+    return auth["username"];
+}
+
+// returns a boolian for if the user is or is not an admin
+async function is_user_admin(){
+	const validate_resp = await validate_session();
+	if (validate_resp == false)
+		return false;
+	const resp = await POST({"call":"is_admin"});
+	if (resp.status != 0)
+		return true;
+	return false;
+}
+	
+
 // if a user is not signed in then they will be
 // sent to the sign-in page.
 async function validate_session_permanence(){
@@ -106,30 +134,47 @@ async function validate_session_permanence(){
 	}
 }
 
-// Signs the user out!
+// Signs the user out by clearing thier username and
+// password from localStorage.
 function sign_out (){
-	// Clear the users session
 	localStorage.clear();
 }
 
-// Removes all occurances of a pattern
-// if the current user is not authenticated
-async function auth_class_remove(pattern){
-	if (await validate_session() == false){
-		document.querySelectorAll(pattern)
-		.forEach((element) => {
+// Removes certain elements depending on authentication
+// level.
+async function init_auth_elements(){
+	const auth_class = "auth";
+	const non_auth_class = "non-auth";
+	const admin_class = "admin";
+	
+	// If the user is authed:
+	if (await validate_session() == true){
+		document.querySelectorAll("." + auth_class)
+		.forEach(element => {
+			element.classList.remove(auth_class);
+		});
+		document.querySelectorAll("." + non_auth_class)
+		.forEach(element => {
 			element.remove();
 		});
 	}
+	
+	// If the user is also an admin:
+	if (await is_user_admin() == true){
+		document.querySelectorAll("." + admin_class)
+		.forEach(element => {
+			element.classList.remove(admin_class);
+		});
+	}
+	
+	const name = await get_name();
+	document.querySelectorAll(".display")
+	.forEach(async (element) => {
+		element.innerHTML = await name;
+	});
 }
 
-// Removes all occurances of a pattern
-// if the current user IS authenticated
-async function auth_class_remove(pattern){
-	if (await validate_session() == true){
-		document.querySelectorAll(pattern)
-		.forEach((element) => {
-			element.remove();
-		});
-	}
-}
+// run the prior function
+(async () => {
+	init_auth_elements();
+})();

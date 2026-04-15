@@ -1,38 +1,36 @@
 <!DOCTYPE html>
-<!-- Sign in page -->
+<!-- Home page -->
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title id="title"></title>
+	<title id="title">Home</title>
 	<link rel=stylesheet href="src/styles.css">
-	<script defer src="src/public/index.js"></script>
-	<script defer src="src/public/login.js"></script>
+	<script src="src/public/index.js"></script>
 </head>
-<body class="login-page">
-	<div class="footer"><a href="home.html">Home Page</a></div>
-
-	<!-- Login form -->
-	<form id="login-form" class="form-sign-in">
-		<center>
-			<h2 id="login-form-header"></h2>
-		</center>
-
-		<!-- *Name options -->
-		<input type="text" placeholder="Username" name="username" autocomplete="username">
-		<input type="text" placeholder="Display Name" class="sign-up" name="displayname">
-		<br>
-
-		<!-- Password options -->
-		<input type="password" placeholder="Password" name="password" autocomplete="password">
-		<input type="password" placeholder="Confirm Password" class="sign-up" name="passwordconfirm">
-		<br>
-
-		<!-- Action buttons -->
-		<button id="login-form-submit">
-			<b>Submit</b>
-		</button>
-		<button id="login-form-switch"></button>
-		<div id="login-form-errors"></div>
-	</form>
+<body class="home-page">
+	<nav>
+		<h2><span class="logo"></span>/Home</h2>
+		<div>
+			<div class="non-auth">
+				<a href="sign_in.html">
+					<button>Sign In</button>
+				</a>
+				<a href="sign_in.html?set_page=sign_up">
+					<button>Sign Up</button>
+				</a>
+			</div>
+			<div class="auth">
+				<button onclick="open_dashboard()">Open Dashboard</button>
+				<button onclick="sign_out();location.reload()">Sign out</button>
+			</div>
+		</div>
+	</nav>
+	<h2>Welcome to <span class="logo"></span>!</h2>
+	<section>
+		<span class="logo"></span> is a platform allowing people to upload tech-related questions and have one of our workers come and assist you.
+		<span class="non-auth">You must have an account before you start doing anything, Click on the top left "Sign Up" button to open the account
+		creation page, or alternatively press the "Sign In" button if you already have an account.</span><span class="auth">You are already signed
+		into an account (<span class="display"></span>), Click the "Dashboard" button in the top left to start creating!</span>
+	</section>
 </body>
 </html>

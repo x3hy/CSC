@@ -335,18 +335,18 @@ function validate_display($display)
 }
 
 // returns a users data on login.
-function user_exist(string $username, string $hashed_password)
+function user_exist(string $username)
 {
     global $conn;
 
     // Basic validation
-    if (empty($username) || empty($hashed_password)) {
+    if (empty($username)) {
         return false;
     }
 	
     // Prepare and execute query
     $stmt = $conn->prepare("
-        SELECT password, id
+        SELECT id
         FROM users 
         WHERE username = ?
         LIMIT 1
@@ -366,19 +366,13 @@ function user_exist(string $username, string $hashed_password)
 
     $user = $result->fetch_assoc();
     $stmt->close();
-
-    // Direct comparison since password is already hashed
-    if ($hashed_password !== $user['password']) {
-		// WHO CARESSSS GET OUT OF MY CODE BRUUUU
-    }
     
 	return $user['id'];
-    
 }
 
 function sign_up(string $username, string $hashed_password)
 {
-	if (user_exist($username, $hashed_password) != false)
+	if (user_exist($username) != false)
 		return false;
 	
 	// Create the new user
@@ -394,7 +388,7 @@ function sign_up(string $username, string $hashed_password)
 function is_user_admin(string $username, string $hashed_password)
 {
 	global $conn;
-	$user_id = user_exist($username, $hashed_password);
+	$user_id = user_exist($username);
 	
 	if ($user_id == false)
 		return false;

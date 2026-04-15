@@ -71,6 +71,28 @@ function client_create_user(string $username, string $hashed_password)
 	return [$code, $msg];
 }
 
+// checks if a user is an admin
+function client_is_admin(string $username, string $hashed_password)
+{
+	$ret = is_user_admin($username, $hashed_password);
+	$code = ($ret === false) ? 0 : 1;
+	$msg = ($ret === false) ? "User is not an admin" : "User is an admin at id: $ret";
+	return [$code, $msg];
+}
+
+// gets the display name of a given user
+function client_get_display(string $username)
+{
+	$ret = user_exist($username);
+	if ($ret !== false){
+		$user_data = get_property_by_id("users", $ret, ["display"]);
+		if ($user_data["display"] !== null)
+			return [0, $user_data["display"]];
+	}
+	
+	return [1, "No Display name found"];
+}
+
 // Simple ping function
 function client_ping()
 {
@@ -93,6 +115,8 @@ function ring_0($data)
 		"display"  => client_validate_display($data["content"]),
 		"password" => client_validate_password($data["content"]),
 		"create_user" => client_create_user($data["auth"]["username"], $data["auth"]["password"]),
+		"is_admin" => client_is_admin($data["auth"]["username"], $data["auth"]["password"]),
+		"get_display" => client_get_display($data["content"]),
 				 
 		// ping!  (server function)
 		"ping" => client_ping(),

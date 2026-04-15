@@ -3,7 +3,7 @@
 -- Host: localhost	Database: 22158_91902
 -- ------------------------------------------------------
 -- Server version 	8.0.45-0ubuntu0.22.04.1
--- Date: Wed, 15 Apr 2026 04:48:27 +0000
+-- Date: Wed, 15 Apr 2026 11:43:35 +0000
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,6 @@
 CREATE TABLE `admins` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `note` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -40,12 +39,43 @@ CREATE TABLE `admins` (
 LOCK TABLES `admins` WRITE;
 /*!40000 ALTER TABLE `admins` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `admins` VALUES (1,2,NULL);
+INSERT INTO `admins` VALUES (1,2);
 /*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
 -- Dumped table `admins` with 1 row(s)
+--
+
+--
+-- Table structure for table `comments`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `comments` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `query_id` int unsigned NOT NULL,
+  `content` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `query_id` (`query_id`),
+  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`query_id`) REFERENCES `queries` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comments`
+--
+
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `comments` with 0 row(s)
 --
 
 --
@@ -61,7 +91,7 @@ CREATE TABLE `orders` (
   `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_paid` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,12 +101,41 @@ CREATE TABLE `orders` (
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `orders` VALUES (1,'test123','test1234','2026-04-15 04:16:24',0);
+INSERT INTO `orders` VALUES (1,'test123','test1234','2026-04-15 04:16:24',0),(2,'test123','test1234','2026-04-15 11:43:14',0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `orders` with 1 row(s)
+-- Dumped table `orders` with 2 row(s)
+--
+
+--
+-- Table structure for table `queries`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `queries` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `note` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `queries`
+--
+
+LOCK TABLES `queries` WRITE;
+/*!40000 ALTER TABLE `queries` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `queries` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `queries` with 0 row(s)
 --
 
 --
@@ -130,7 +189,7 @@ CREATE TABLE `transactions` (
   KEY `order_id` (`order_id`),
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,12 +199,12 @@ CREATE TABLE `transactions` (
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `transactions` VALUES (1,1,1,'2026-04-15 04:16:24',123.12,1);
+INSERT INTO `transactions` VALUES (1,1,1,'2026-04-15 04:16:24',123.12,1),(2,1,2,'2026-04-15 11:43:14',123.12,1);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `transactions` with 1 row(s)
+-- Dumped table `transactions` with 2 row(s)
 --
 
 --
@@ -162,7 +221,7 @@ CREATE TABLE `users` (
   `display` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,12 +231,12 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `users` VALUES (1,NULL,'coolguy1','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','Alex Smith'),(2,NULL,'coolguy2','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','Matua Haimay'),(3,NULL,'tracey','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f',NULL);
+INSERT INTO `users` VALUES (1,NULL,'coolguy1','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','Alex Smith'),(2,NULL,'coolguy2','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','Matua Haimay');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `users` with 3 row(s)
+-- Dumped table `users` with 2 row(s)
 --
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -190,4 +249,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Wed, 15 Apr 2026 04:48:27 +0000
+-- Dump completed on: Wed, 15 Apr 2026 11:43:35 +0000

@@ -25,12 +25,20 @@ create_table(
 
 // Create the orders table
 create_table(
-"orders", "
+"queries", "
 	id $ID_VALUE,
 	note $NOTE_VALUE,
 	description $DESCRIPTION_VALUE,
+	issued $TIMESTAMP_VALUE
+");
+
+create_table(
+"comments","
+	id $ID_VALUE,
+	query_id $FOREIGN_ID_VALUE,
+	content $DESCRIPTION_VALUE,
 	issued $TIMESTAMP_VALUE,
-	is_paid  BOOLEAN
+	FOREIGN KEY (query_id) REFERENCES queries(id) ON DELETE CASCADE
 ");
 
 // Create the admins modifier table
@@ -38,21 +46,7 @@ create_table(
 "admins", "
 	id $ID_VALUE,
 	user_id $FOREIGN_ID_VALUE,
-	note $NOTE_VALUE,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-");
-
-// Create the transactions table
-create_table(
-"transactions", "
-    id $ID_VALUE,
-    user_id $FOREIGN_ID_VALUE,
-	order_id $FOREIGN_ID_VALUE,
-    issued $TIMESTAMP_VALUE,
-    amount $CURRENCY_VALUE NOT NULL,
-    is_paid BOOLEAN,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-	FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 ");
 
 

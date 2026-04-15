@@ -19,7 +19,7 @@ if (!defined('DB_LIBRARY')) {
 	// side note: for the hash, to make it a bit smaller you can cross reference the
 	// ascii codes of the first and second halfs of the hash to generate a half size hash
 	// that can be expanded to the larger hash.
-
+	
 	// Value properties, made to be used in the actual sql table statements.
 	$ID_VALUE = "INT($id_int_size) UNSIGNED AUTO_INCREMENT PRIMARY KEY";
 	$NOTE_VALUE =                            "VARCHAR($note_char_size)";
@@ -33,7 +33,7 @@ if (!defined('DB_LIBRARY')) {
 	$reset_file = "reset.php";
 	
 	// Confirm that the database has been initialised.
-	$tables = ["users", "orders", "admins", "transactions"];
+	$tables = ["users", "queries", "admins", "comments"];
 	if (!exist_tables($tables))
 	  {
 		echo "Some tables didn't exist, to fix this the database will be reset.<br><br>";

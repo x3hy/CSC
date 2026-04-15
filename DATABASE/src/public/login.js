@@ -71,10 +71,9 @@ _form_switch.addEventListener("click", (e) => {
 });
 
 
-
 (async ()=>{
-	const server_resp = await ping_server();
-	if (!server_resp.code != 0){
+	const server_online = await ping_server();
+	if (!server_online){
 		set_error("Failed to ping the server, your client is broken or the server is down")
 		return
 	}
@@ -83,6 +82,19 @@ _form_switch.addEventListener("click", (e) => {
 		open_dashboard();
 })();
 
+// If the urlparameter set_page is set to sign_up then
+// change the page over to the sign_up page..
+const params = new URLSearchParams(String(location.href).split("?")[1]);
+for (let pair of params.entries()) {
+	console.log(pair);
+	if (pair[0] == "set_page") {
+		if (pair[1] == "sign_up")
+			_form.classList.remove("form-sign-in");
+		else 
+			_form.classList.add("form-sign-in");
+		_title.innerText = get_mode();
+	}
+}
 
 // Disable submission of the form unless permitted
 _form.addEventListener("submit", (e)=>{

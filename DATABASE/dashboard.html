@@ -1,16 +1,35 @@
 <!DOCTYPE html>
+<!-- Dashboard page -->
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>dashboard</title>
+	<title id="title">Dashboard</title>
+	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
-	<link rel="stylesheet" href="src/styles.css">
-	<script title="check auth session">
+	<script>
 		validate_session_permanence();
 	</script>
 </head>
-<body>
-	<h2>Welcome to the dashboard</h2>
-	<button onclick="sign_out();open_sign_in()">Sign out</button>
+<body class="home-page">
+	<nav>
+		<h2><span class="logo"></span>/Dashboard</h2>
+		<div>
+			<div class="auth">
+				<button onclick="open_home()">Open Home Page</button>
+				<button onclick="sign_out();location.reload()">Sign out</button>
+				<button onclick="open_home()">Create</button>
+			</div>
+		</div>
+	</nav>
+	<section>
+		<h2>Welcome to the Dashboard, <span class="display"></span></h2>
+		Hello <span class="display"></span>, this is the dashboard. This page displays all of your 
+		questions. To view more information on this site press the "Open Home Page" button in the
+		top-left of this page! If you want to create a new question press the "Create" button.
+		<span class="admin">
+			<br>
+			Hello World you must be an admin!!
+		</span>
+	</section>
 </body>
 </html>

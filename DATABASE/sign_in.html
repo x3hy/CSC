@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- Sign in page -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title id="title"></title>
+	<link rel=stylesheet href="src/styles.css">
+	<script defer src="src/public/index.js"></script>
+	<script defer src="src/public/login.js"></script>
+</head>
+<body class="login-page">
+	<div class="footer"><a href="index.html">Home Page</a></div>
+
+	<!-- Login form -->
+	<form id="login-form" class="form-sign-in">
+		<center>
+			<h2 id="login-form-header"></h2>
+		</center>
+
+		<!-- *Name options -->
+		<input type="text" placeholder="Username" name="username" autocomplete="username">
+		<input type="text" placeholder="Display Name" class="sign-up" name="displayname">
+		<br>
+
+		<!-- Password options -->
+		<input type="password" placeholder="Password" name="password" autocomplete="password">
+		<input type="password" placeholder="Confirm Password" class="sign-up" name="passwordconfirm">
+		<br>
+
+		<!-- Action buttons -->
+		<button id="login-form-submit">
+			<b>Submit</b>
+		</button>
+		<button id="login-form-switch"></button>
+		<div id="login-form-errors"></div>
+	</form>
+</body>
+</html>
