@@ -7,6 +7,8 @@
 	--sign-up: "Sign Up";
 	--sign-in: "Sign In";
 	--error-foreground: red;
+	--padding: 5px;
+	--ui-d-width: 200px;
 }
 
 * {
@@ -23,11 +25,13 @@ body {
 }
 
 input, button {
-	margin:5px;
-	padding:5px;
+	margin:var(--padding);
+	padding:var(--padding);
 	box-sizing:border-box;
 	background: var(--surface);
 	color: var(--surface-foreground);
+	width: var(--ui-d-width);
+	border: 1px solid var(--foreground);
 }
 a {color: var(--foreground);}
 
@@ -42,18 +46,27 @@ a {color: var(--foreground);}
 		transform: translateX(-50%);
 		margin-left:50vw;
 
-		#login-form-errors {color: var(--error-foreground);}
+		#login-form-errors {
+			color: var(--surface-foreground);
+			background:var(--error-foreground);
+			box-sizing:border-box;
+			padding:5px;
+			margin:var(--padding);
+			display:none;
+		}
 		#login-form-switch::before {content: var(--sign-in);}
 		#login-form-header::before {content: var(--sign-up);}
-		.sign-in {display:none;}
 	}
 
 	.form-sign-in {
 		#login-form-switch::before {content: var(--sign-up) !important;}
 		#login-form-header::before {content: var(--sign-in) !important;}
 		.sign-up {
-			opacity:0;
+			display:none;
 			user-select:none;
 		}
+	}
+	.form-sign-in input:not(.sign-in) {
+		width: calc((var(--ui-d-width)*2) + (var(--padding)*3));
 	}
 }

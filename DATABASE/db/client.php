@@ -19,6 +19,7 @@ private resource so that a user cannot see this.
 header('Content-Type: application/json');
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
+define("APP_START", true);
 require __DIR__ .'/include.php';
 
 // return data "struct"
@@ -114,6 +115,7 @@ function ring_2($data)
 {
 	return match ($data["call"])
 	{
+		"admin_ping" => client_ping(),
 		default => null
 	};
 }
@@ -140,7 +142,7 @@ if ($data !== null && is_array($data))
 	if(isset($auth["password"]) != false && isset($auth["username"]) != false)
 	  {
 		if (user_exist($auth["username"], $auth["password"]) == false)
-			client_exit(1, "Username and password is incorrect (ring 1 access deined)");
+			client_exit(1, "Username and password is incorrect (ring 1 access denied)");
 		$is_validated = true;
 		$is_admin = is_user_admin($auth["username"], $auth["password"]);
 	  }

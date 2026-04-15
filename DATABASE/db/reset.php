@@ -1,4 +1,4 @@
-<?php
+<?php defined('APP_START') or die('Access denied.');
 // Load the library file, it contains all of the 
 // semantic functions used in this file.
 require __DIR__ . "/include.php";

@@ -17,6 +17,18 @@ const get_mode = (()=>{
 		.replaceAll('"', '');
 });
 
+// Sets a new error message
+function set_error(msg){
+	console.error(msg);
+	_form_errors.innerText = msg;
+	_form_errors.style.display = "block";
+}
+
+// Removes the error message
+function clear_error(){
+	_form_errors.innerText = "";
+	_form_errors.style.display = "none";
+}
 
 // Creates a new user
 async function sign_up(username, password){
@@ -58,10 +70,18 @@ _form_switch.addEventListener("click", (e) => {
 	_title.innerText = get_mode();
 });
 
+
+
+(async ()=>{
+	if (await validate_session() == true)
+		open_dashboard();
+})();
+
+
 // Disable submission of the form unless permitted
 _form.addEventListener("submit", (e)=>{
 	e.preventDefault();
-	_form_errors.innerText = "";
+	clear_error();
 	setTimeout(()=>{
 		if (!_let_submit_form) return;
 		_let_submit_form = false;
@@ -77,19 +97,19 @@ _form.addEventListener("submit", (e)=>{
 		
 		// Check if the passwords match when signing up
 		if (mode && data.password != data.passwordconfirm){
-			_form_errors.innerText = "Passwords do not match";
+			set_error("Passwords do not match");
 			return;
 		}
 
 		// Ensure that a username has been provided
 		if (data.username == ""){
-			_form_errors.innerText = "Username is required";
+			set_error("Username is required");
 			return;
 		}
 		
 		// Ensure that a password has been provided
 		if (data.password == ""){
-			_form_errors.innerText = "Password is required";
+			set_error("Password is required");
 			return
 		};
 
@@ -99,13 +119,12 @@ _form.addEventListener("submit", (e)=>{
 
 		// Now to verify with the server to check if the props are valid
 		if (!(async () => {
-			
 			// for SIGN UP mode:
 			if (mode){
 				// check username:
 				const username_resp = await validate_username(data.username);
 				if (await username_resp.status != 0){
-					_form_errors.innerText = await username_resp;
+					set_error(await username_resp.message);
 					return false;
 				}
 				
@@ -113,7 +132,7 @@ _form.addEventListener("submit", (e)=>{
 				if (data.display != undefined){
 					const display_resp = await validate_display(data.display);
 					if(await display_resp.status != 0){
-						_form_errors.innerText = await display_resp.message;
+						set_error(await display_resp.message);
 						return false;
 					}
 				}
@@ -121,13 +140,13 @@ _form.addEventListener("submit", (e)=>{
 				// check password:
 				const password_resp = await validate_password(data.password);
 				if(await password_resp.status != 0){
-					_form_errors.innerText = await password_resp.message;
+					set_error(await password_resp.message);
 					return false;
 				}
 				// Sign up user:
 				const sign_up_resp = await sign_up(data.username, data.password);
 				if (await  sign_up_resp.status != 0){
-					_form_errors.innerText = await sign_up_resp.message;
+					set_error(await sign_up_resp.message);
 					return false;
 				}
 			}
@@ -137,7 +156,7 @@ _form.addEventListener("submit", (e)=>{
 			// to the sign in process
 			const sign_in_resp = await sign_in(data.username, data.password);
 			if (await  sign_in_resp.status != 0){
-				_form_errors.innerText = await sign_in_resp.message;
+				set_error(await sign_in_resp.message);
 				return false;
 			}
 			

@@ -1,4 +1,4 @@
-<?php
+<?php defined('APP_START') or die('Access denied.');
 // This file is hidden anyway, no point overcomplicating things by moving the data to another file.
 // having variables for the properties is bad actually because any child files that include the
 // dbconnect file will have a variable that has the password and username of the db.

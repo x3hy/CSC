@@ -1,4 +1,4 @@
-<?php
+<?php defined('APP_START') or die('Access denied.');
 // #ifndef DB_LIBRARY
 // #define DB_LIBRARY
 if (!defined('DB_LIBRARY')) {
