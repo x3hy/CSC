@@ -17,6 +17,40 @@ const get_mode = (()=>{
 		.replaceAll('"', '');
 });
 
+
+// Creates a new user
+async function sign_up(username, password){
+	// hash the password
+	password = await generate_password(password);
+		
+	// set it into the local storage:
+	localStorage.setItem(_username, username);
+	localStorage.setItem(_password, password);
+	
+	return await POST({"call":"create_user"});
+}
+
+// Validates a username using server api
+async function validate_username(username){
+	 return await POST(
+		{"call":"username", "content" : username}
+	);
+}
+
+// Validates a display name using the server api
+async function validate_display(display){
+	return await POST(
+		{"call":"display", "content" : display}
+	);
+}
+
+// Validates a password using the server api
+async function validate_password(password){
+	return await POST(
+		{"call":"password", "content" : password}
+	);
+}
+
 // Toggle between the sign-in and sign-up pages
 _title.innerText = get_mode();
 _form_switch.addEventListener("click", (e) => {
@@ -65,33 +99,50 @@ _form.addEventListener("submit", (e)=>{
 
 		// Now to verify with the server to check if the props are valid
 		if (!(async () => {
+			
+			// for SIGN UP mode:
 			if (mode){
 				// check username:
-				const username_resp = validate_username(data.username);
-				if (await username_resp != true){
+				const username_resp = await validate_username(data.username);
+				if (await username_resp.status != 0){
 					_form_errors.innerText = await username_resp;
 					return false;
 				}
 				
-				const display_resp = validate_display(data.display);
-				if(await display_resp.message != true){
-					_form_errors.innerText = await display_resp.message;
-					return false;
+				// check display name:
+				if (data.display != undefined){
+					const display_resp = await validate_display(data.display);
+					if(await display_resp.status != 0){
+						_form_errors.innerText = await display_resp.message;
+						return false;
+					}
 				}
 				
-				// Now both the username and displayname have been validated. The
-				// password and username have been provided, we can now move over
-				// to the sign in process.	
+				// check password:
+				const password_resp = await validate_password(data.password);
+				if(await password_resp.status != 0){
+					_form_errors.innerText = await password_resp.message;
+					return false;
+				}
+				// Sign up user:
+				const sign_up_resp = await sign_up(data.username, data.password);
+				if (await  sign_up_resp.status != 0){
+					_form_errors.innerText = await sign_up_resp.message;
+					return false;
+				}
 			}
 			
-			const ret = sign_in(await data.username, data.password);
-			if (ret != true){
-				_form_errors.innerText = await ret;
+			// Now both the username and displayname have been validated. The
+			// password and username have been provided, we can now move over
+			// to the sign in process
+			const sign_in_resp = await sign_in(data.username, data.password);
+			if (await  sign_in_resp.status != 0){
+				_form_errors.innerText = await sign_in_resp.message;
 				return false;
 			}
 			
-			return true;
+			// Move to the dashboard page after successfully authenticating the user
+			open_dashboard();
 		})()) return;
-
 	}, 200);
 });

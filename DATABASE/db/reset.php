@@ -4,7 +4,7 @@
 require __DIR__ . "/include.php";
 
 
-echo "Deleting tables:<br>";
+echo "<b>Deleting tables:</b><br>";
 delete_tables($tables);
 
 

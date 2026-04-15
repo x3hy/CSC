@@ -5,51 +5,32 @@ const __DIR__ = (function() {
     return src ? src.substring(0, src.lastIndexOf('/')) : '';
 })();
 
-// Generate a password
+// Generate a password (sha-256)
 async function generate_password(raw) {
-    // Convert string to UTF-8 bytes
-    const encoder = new TextEncoder();
-    const data = encoder.encode(raw);
-
-    // Compute SHA-256 hash using Web Crypto API (available in all modern browsers)
+    const data = new TextEncoder().encode(raw);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-
-    // Convert buffer to hex string (same format as PHP hash())
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray
+    return Array.from(new Uint8Array(hashBuffer))
         .map(byte => byte.toString(16).padStart(2, '0'))
         .join('');
-
-    return hashHex;
 }
 
-// Check if the server is active
-async function server_active(){
-	const ret = await POST({"call": "ping", "content": ""});
-	if (await ret == "")
-		return true;
-	return false;
-}
-
-// creds key names
+// Cred key names
 const _username = "username";
 const _password = "password";
 
-// signs in a user
-async function sign_in(username, password){
-	// hash the password
-	password = await generate_password(password);
+// Gets the auth tokens
+function get_local_auth(){
+	let auth = {};
+
+	// Get values from localStorage
+	auth["username"] = localStorage.getItem(_username);
+	auth["password"] = localStorage.getItem(_password);
 	
-	// set it into the local storage:
-	localStorage.setItem(_username, username);
-	localStorage.setItem(_password, password);
+	// Ensure they have a value
+	if (auth["username"] == null || auth["password"] == null)
+		auth["username"] = auth["password"] = false;
 	
-	// Call the auth API to check if the credentials are valid
-	
-	const ret = await POST({"call":"auth_ping", "content": ""});
-	if (await ret == 0)
-		return true;
-	return await ret.message;
+	return auth;
 }
 
 // Posts data to the back-end API
@@ -57,12 +38,7 @@ async function POST(content, callback = console.error) {
 	const validate_php_file= __DIR__ + "/../../db/client.php";
 	let out;
 	
-	content["username"] = localStorage.getItem(_username);
-	content["password"] = localStorage.getItem(_password);
-	
-	if (content["username"] == null || content["password"] == null)
-		content["username"] = content["password"] = false;
-	
+	content["auth"] = get_local_auth();
 	console.log(`sending ${ JSON.stringify(content)} to server.`);
 		
 	try {
@@ -86,22 +62,52 @@ async function POST(content, callback = console.error) {
 	return await out;
 }
 
-async function validate_username(username){
-	const username_resp = await POST(
-		{"call":"username", "content" : data.username}
-	);
+// Check if the server is active
+async function server_active(){
+	const ret = await POST({"call": "ping", "content": ""});
+	if (await ret == "")
+		return true;
+	return false;
+}
+
+function open_sign_in(){
+	location.href = __DIR__ + "/../../index.html";
+}
+
+function open_dashboard(){
+	location.href = __DIR__ + "/../../dashboard.html";
+}
+
+// Signs in a user
+async function sign_in(username, password){
+	// hash the password
+	password = await generate_password(password);
 	
-	if (await username_resp.message != true)
-		return await username_resp.message;
+	// set it into the local storage:
+	localStorage.setItem(_username, username);
+	localStorage.setItem(_password, password);
+	return await POST({"call":"auth_ping"});
+ }
+
+// Checks if a user has signed in or not already
+async function validate_session(){
+	const sign_in_resp = await POST({"call":"auth_ping"});
+	if (sign_in_resp.status != 0)
+		return false;
 	return true;
 }
 
-async function validate_display(display){
-	const display_resp = await POST(
-		{"call":"display", "content" : data.username}
-	);
-	
-	if (await display_resp.message != true)
-		return await display_resp.message;
-	return true;
+// if a user is not signed in then they will be
+// sent to the sign-in page.
+async function validate_session_permanence(){
+	if (await validate_session() == false){
+		sign_out();
+		open_sign_in();
+	}
+}
+
+// Signs the user out!
+function sign_out (){
+	// Clear the users session
+	localStorage.clear();
 }

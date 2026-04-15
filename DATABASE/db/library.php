@@ -263,6 +263,32 @@ function get_properties_from_table($table, array $props) {
     return $data;
 }
 
+
+function validate_password($password)
+{
+    if (!is_string($password)) {
+        return "Password must be a string.";
+    }
+
+    // IMPORTANT: Do NOT trim passwords (spaces can be valid characters)
+    
+    // Length checks
+    if (strlen($password) < 8) {
+        return "Password must be at least 8 characters long.";
+    }
+    
+    if (strlen($password) > 32) {
+        return "Password cannot be longer than 32 characters.";
+    }
+
+    // Allowed characters only: letters, numbers, and !@#$%^&*
+    if (!preg_match('/^[a-zA-Z0-9!@#$%^&*]+$/', $password)) {
+        return "Password can only contain letters (a-z, A-Z), numbers (0-9), and these symbols: ! @ # $ % ^ & *";
+    }
+
+    return true;
+}
+
 function validate_username($username)
 {
     if (!is_string($username)) {
@@ -295,10 +321,7 @@ function validate_display($display)
 
     $display = trim($display);
 
-    // Length checks
-    if (strlen($display) < 2) {
-        return "Display name must be at least 2 characters long.";
-    }
+    // Length checks:
     if (strlen($display) > 64) {
         return "Display name cannot be longer than 64 characters.";
     }
@@ -312,7 +335,7 @@ function validate_display($display)
 }
 
 // returns a users data on login.
-function validate_user(string $username, string $hashed_password)
+function user_exist(string $username, string $hashed_password)
 {
     global $conn;
 
@@ -346,12 +369,23 @@ function validate_user(string $username, string $hashed_password)
 
     // Direct comparison since password is already hashed
     if ($hashed_password !== $user['password']) {
-        return false;
+		// WHO CARESSSS GET OUT OF MY CODE BRUUUU
     }
+    
+	return $user['id'];
+    
+}
 
-    // Remove password from returned data for security
-    unset($user['password']);
-    return $user['id'];
+function sign_up(string $username, string $hashed_password)
+{
+	if (user_exist($username, $hashed_password) != false)
+		return false;
+	
+	// Create the new user
+	return insert_into_table("users", [
+		"username" => $username,
+		"password" => $hashed_password
+	]);
 }
 
 // fetches the users ID from the prior function, then if the id
@@ -360,7 +394,7 @@ function validate_user(string $username, string $hashed_password)
 function is_user_admin(string $username, string $hashed_password)
 {
 	global $conn;
-	$user_id = validate_user($username, $hashed_password);
+	$user_id = user_exist($username, $hashed_password);
 	
 	if ($user_id == false)
 		return false;
