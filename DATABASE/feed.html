@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- Home page -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title id="title">Feed</title>
+	<link rel=stylesheet href="src/styles.css">
+	<script src="src/public/index.js"></script>
+</head>
+<body class="home-page">
+	<nav>
+		<h2><span class="logo"></span>/Feed</h2>
+		<div>
+			<div class="non-auth">
+				<a href="sign_in.html">
+					<button>Sign In</button>
+				</a>
+				<a href="sign_in.html?set_page=sign_up">
+					<button>Sign Up</button>
+				</a>
+			</div>
+			<div class="auth">
+				<button onclick="open_dashboard()">Open Dashboard</button>
+				<button onclick="sign_out();location.reload()">Sign out</button>
+			</div>
+		</div>
+	</nav>
+	<span class="auth">
+		<section>
+			<form id="form">
+				<input class="form-textarea" id="post-content">
+				<br>
+				<button id="post-submit">Submit</button>
+				<button id="post-clear">Clear</button>
+			</form>
+		</section>
+	</span>
+	<div id="posts">
+	</div>
+</body>
+</html>

@@ -88,3 +88,36 @@ new pages or done through a js client api (so that the file can be a .html not a
 	but they would not know the usernae or password of the user. of course this is stupid
 	because the attacker could sign in using the spoiled token and then view information
 	on the user which could be the users name and what not.
+	
+	
+FEEDBACK:
+
+
+
+
+BUG1: 
+
+<br />
+<b>Fatal error</b>:  Uncaught mysqli_sql_exception: Prepared statement needs to be re-prepared in /var/www/projectspace/zkvwvwwu/AS91902/db/library.php:236
+Stack trace:
+#0 /var/www/projectspace/zkvwvwwu/AS91902/db/library.php(236): mysqli_stmt-&gt;execute()
+#1 /var/www/projectspace/zkvwvwwu/AS91902/db/client.php(47): delete_row_by_id()
+#2 /var/www/projectspace/zkvwvwwu/AS91902/db/client.php(172): client_delete_user()
+#3 /var/www/projectspace/zkvwvwwu/AS91902/db/client.php(224): ring_2()
+#4 {main}
+  thrown in <b>/var/www/projectspace/zkvwvwwu/AS91902/db/library.php</b> on line <b>236</b><br />
+
+	  
+THIS STUPID ISSUE OCCURES WHEN TRYING TO DELETE A USER.. I HAVE NO CLUE WHY. after some
+research it seems to be an actual SQL issue. This is devistating because it means my teacher
+has chosen a platform that does not allow for seamless creation of database-related projects
+at a higher level than what was expected. I've not done to much work anyway and I cannot access
+the database directly on this platform so im unsure what to do.
+
+todo:
+
+create profile page: it must show the posts of a specific user.
+the profile page should take a url parameter that lets you specifiy a user to view. (by name)
+if no username is provided it will use the SESSION data.
+
+add likes value to posts, perhaps this needs to be another table, this could mean i could display a "likes" section that only the user can read.

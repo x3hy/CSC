@@ -4,32 +4,87 @@
 <head>
 	<meta charset="UTF-8">
 	<title id="title">Dashboard</title>
+	<link rel=stylesheet href="src/mvp.css">
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
+	<script src="src/public/dashboard.js" defer></script>
 	<script>
 		validate_session_permanence();
 	</script>
 </head>
 <body class="home-page">
-	<nav>
-		<h2><span class="logo"></span>/Dashboard</h2>
-		<div>
-			<div class="auth">
-				<button onclick="open_home()">Open Home Page</button>
-				<button onclick="sign_out();location.reload()">Sign out</button>
-				<button onclick="open_home()">Create</button>
-			</div>
+	<header>
+		<nav>
+			<h2><span class="logo"></span>/Dashboard</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<span class="auth">
+					<li><a href="create.html">Create</a></li>
+					<li><a href="user.html">Profile</a></li>
+				</span>
+				<li><a href="feed.html">Feed</a></li>
+				<span class="auth">
+					<li onclick="sign_out();open_home()">Sign out</li>
+				</span>
+				<span class="non-auth">
+					<li><a href="sign_in.html">Sign In</a></li>
+					<li><a href="sign_in.html?sign=up">Sign Up</a></li>
+				</span>
+			</ul>
+		</nav>
+		<h1>Welcome to the Dashboard, <b class="accent"><span class="display">Username</span></b></h1>
+		<p>
+			Hello <b class="accent"><span class="display">Username</span></b>, this is the dashboard. This 
+			page lets you change your user information, think of it as a "settings" page. If you look 
+			towards the top left of this page you will see a few links, these let you navigate to the 
+			several pages of this site. If youre unsure where to begin, click on the "<i>Home</i>" 
+			button to learn more about this page as a whole. If you want to create a new post you can
+			do so by pressing the "Feed" button and moving to the top of the page. I you would like to
+			edit you profile you can change the values below in the "User Settings" section.
+		</p>
+		<div class="admin">
+			<p>
+				You are an <strong>Admin</strong>, you have special access to the database, below are some admin only features:
+			</p>
+			<h2 class="left">Users:</h2>
+			<table class="left">
+				<thead>
+				<tr>
+					<th># User ID</th>
+					<th>Display</th>
+					<th>Username</th>
+					<th>Password Hash</th>
+					<th>Actions</th>
+				</tr>
+				</thead>
+				<tbody id="users">
+				</tbody>
+			</table>
+			<!-- 28.50 -->
 		</div>
-	</nav>
-	<section>
-		<h2>Welcome to the Dashboard, <span class="display"></span></h2>
-		Hello <span class="display"></span>, this is the dashboard. This page displays all of your 
-		questions. To view more information on this site press the "Open Home Page" button in the
-		top-left of this page! If you want to create a new question press the "Create" button.
-		<span class="admin">
-			<br>
-			Hello World you must be an admin!!
-		</span>
-	</section>
+		<hr>
+		<section>
+			<form id="edit-form">
+				<h2><span class="display">Username</span>'s User Settings:</h2>
+				<label>
+					Username: <input placeholder="oldusername">
+				</label>
+				<label>
+					Display name: <input placeholder="display name">
+				</label>
+				<label>
+					Change Password: <input placeholder="new password">
+				</label>
+				<label>
+					Confirm Password: <input placeholder="new password">
+				</label>
+				<button>Submit Changes</button>
+				<i>
+					<button onclick="delete_user()">Permanently Delete Account</button>
+					<button disabled>Delete All Posts</button>
+				</i>
+			</form>
+		</section>
+	</header>
 </body>
 </html>

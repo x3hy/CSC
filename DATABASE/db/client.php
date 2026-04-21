@@ -40,6 +40,33 @@ function client_validate_username(string $username)
 	return [$code, $msg];
 }
 
+function client_delete_user($user_id){
+	if (!isset($user_id))
+		return [1, "Invalid UserID provided."];
+	
+	delete_row_by_id("users", $user_id);
+	return [0, "User #$ret deleted"];
+}
+
+// deletes the current user
+function client_delete_self(string $username){
+	$ret = user_exist($username);
+	if ($ret === false)
+		return [1, "User does not exist/Error"];
+
+	return client_delete_user($ret);
+}
+
+function client_get_users_list(){
+	$ret = get_properties_from_table("users", [
+		"username","display","id", "password"
+	]);
+	
+	$code = ($ret !== false) ? 0 : 1;
+	$msg = ($ret !== false) ? $ret : "Failed to fetch users";
+	return [$code, $msg];
+}
+
 // Very verbose validate_display function
 function client_validate_display(string $display)
 {
@@ -59,11 +86,11 @@ function client_validate_password(string $password)
 }
 
 // Creates a user (verbose)
-function client_create_user(string $username, string $hashed_password)
+function client_create_user(string $username, string $hashed_password, $display)
 {
 	// Suppress output
 	ob_start();
-	$ret = sign_up($username, $hashed_password);
+	$ret = sign_up($username, $hashed_password, $display);
 	ob_end_clean();
 	
 	$code = ($ret === false) ? 1 : 0;
@@ -114,7 +141,7 @@ function ring_0($data)
 		"username" => client_validate_username($data["content"]),
 		"display"  => client_validate_display($data["content"]),
 		"password" => client_validate_password($data["content"]),
-		"create_user" => client_create_user($data["auth"]["username"], $data["auth"]["password"]),
+		"create_user" => client_create_user($data["auth"]["username"], $data["auth"]["password"], $data["content"]),
 		"is_admin" => client_is_admin($data["auth"]["username"], $data["auth"]["password"]),
 		"get_display" => client_get_display($data["content"]),
 				 
@@ -130,6 +157,7 @@ function ring_1($data)
 	return match ($data["call"])
 	{
 		"auth_ping" => client_ping(),
+		"delete_self" => client_delete_self($data["auth"]["username"]),
 		default => null
 	};
 }
@@ -140,6 +168,9 @@ function ring_2($data)
 	return match ($data["call"])
 	{
 		"admin_ping" => client_ping(),
+		"list_users" => client_get_users_list(),
+		"delete_user" => client_delete_user($data["content"]),
+
 		default => null
 	};
 }
@@ -150,7 +181,9 @@ if ($data !== null && is_array($data))
 	// The given json should contain a "call" value
 	if (!isset($data["call"]))
 		client_exit(1, "Required parameters not given:");
-
+	
+	if (!isset($data["content"]))
+		$data["content"] = NULL;
 	
 	// Ring 0;
 	$ret = ring_0($data);
@@ -172,7 +205,7 @@ if ($data !== null && is_array($data))
 	  }
 	
 	// Remove the data from memory when its not needed..
-	$data["auth"] = $auth = [];
+	// $data["auth"] = $auth = [];
 	
 	
 	// Now these are the permission-locked features:

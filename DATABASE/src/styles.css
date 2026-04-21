@@ -1,122 +1,19 @@
+@import "mvp.css";
+
 /* Settings */
 :root {
-	--foreground: black;
-	--background: white;
-	--accent: cyan;
-	--surface: rgba(0,0,0,0.5);
-	--surface-foreground: white;
 	--sign-up: "Sign Up";
 	--sign-in: "Sign In";
-	--error-foreground: red;
-	--padding: 7px;
-	--padding-large: 20px;
-	--ui-d-width: 200px;
-	--border-radius: 10px;
 	--project-name: "AS91902";
-}
-
-* {
-	border-width:0px;
-	border-radius:0px;
-	outline:none;
-}
-
-hr {
-	border-bottom: solid 1px var(--foreground);
 }
 
 .logo::before {
 	content: var(--project-name);
 }
 
-section {
-	border-radius: var(--border-radius);
-	background: var(--surface);
-	color:var(--surface-foreground);
-	padding:var(--padding);
-	border: 1px solid var(--foreground);
-	margin:var(--padding-large);
-}
-
-body {
-	background: var(--background);
-	color: var(--foreground);
-	margin:0px;
-	padding:0px;
-}
-
-input, button {
-	margin:var(--padding);
-	padding:var(--padding);
-	box-sizing:border-box;
-	background: var(--surface);
-	color: var(--surface-foreground);
-	width: var(--ui-d-width);
-	border: 1px solid var(--foreground);
-	border-radius: var(--border-radius);
-}
-
-.display {
-	font-style:italic;
-	color: var(--accent);
-}
-
-nav {
-	width:100vw;
-	height:fit-content;
-	display:flex;
-	align-items:center;
-	justify-content: space-between;
-	background: var(--surface);
-	color: var(--surface-foreground);
-	padding:0px var(--padding-large);
-	box-sizing:border-box;
-	gap: var(--padding-large);
-	button {
-		background:transparent;
-		width:fit-content;
-	}
-}
-
-input:focus, button:hover {
-	border: 1px solid var(--accent);
-}
-
-p {padding: var(--padding-large);}
-
-a {color: var(--foreground);}
-
 /* Login form styles */
 .login-page {
-	height:50vh;
-	padding-top:15vh;
-
-	.footer {
-		position:absolute;
-		bottom:0;
-		width:100%;
-		text-align:center;
-		opacity:0.5;
-	}
-	
 	#login-form {
-		width:fit-content;
-		background:var(--surface);
-		padding:var(--padding);
-		border-radius: var(--border-radius);
-		transform: translateX(-50%);
-		margin-left:50vw;
-
-		#login-form-errors {
-			color: var(--surface-foreground);
-			background:var(--error-foreground);
-			box-sizing:border-box;
-			padding:5px;
-			margin:var(--padding);
-			border-radius: var(--border-radius);
-			display:none;
-			width:calc((var(--ui-d-width)*2) + (var(--padding)*3));
-		}
 		#login-form-switch::before {content: var(--sign-in);}
 		#login-form-header::before {content: var(--sign-up);}
 	}
@@ -128,13 +25,9 @@ a {color: var(--foreground);}
 			display:none;
 			user-select:none;
 		}
-	}
-	.form-sign-in input:not(.sign-in) {
-		width: calc((var(--ui-d-width)*2) + (var(--padding)*3));
+		#login-form-errors {display:none;}
 	}
 }
 
-
-.auth, .admin {
-	display:none;
-}
+.auth, .admin, #login-form-errors {display:none;}
+form {width:100%;}

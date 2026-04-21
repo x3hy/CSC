@@ -1,6 +1,7 @@
-<?php defined('APP_START') or die('Access denied.');
+<?php
 // Load the library file, it contains all of the 
 // semantic functions used in this file.
+define('APP_START', 1);
 require __DIR__ . "/include.php";
 
 
@@ -9,9 +10,6 @@ delete_tables($tables);
 
 
 echo "<br><b>Creating tables:</b><br>";
-
-// Create the sessions table
-
 
 // Create the users table
 create_table(
@@ -25,20 +23,22 @@ create_table(
 
 // Create the orders table
 create_table(
-"queries", "
+"posts", "
 	id $ID_VALUE,
-	note $NOTE_VALUE,
+	user_id $FOREIGN_ID_VALUE,
 	description $DESCRIPTION_VALUE,
-	issued $TIMESTAMP_VALUE
+	time_issued $TIMESTAMP_VALUE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	
 ");
 
 create_table(
 "comments","
 	id $ID_VALUE,
-	query_id $FOREIGN_ID_VALUE,
+	post_id $FOREIGN_ID_VALUE,
 	content $DESCRIPTION_VALUE,
-	issued $TIMESTAMP_VALUE,
-	FOREIGN KEY (query_id) REFERENCES queries(id) ON DELETE CASCADE
+	time_issued $TIMESTAMP_VALUE,
+	FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
 // Create the admins modifier table
@@ -78,14 +78,18 @@ insert_into_table("transactions", [
 	"is_paid" => true
 ]);
 
-// Create a new customer user
+// Create a new user
 $user_id = 
 	insert_into_table("users", [
 		"username" => "coolguy2",
-		"display" => "Matua Haimay",
 		"password" => generate_password("password123")
 	]
 );
+
+// Change a users properties:
+set_property_by_id("users", $user_id, [
+	"display" => "\"Matua Haimay\""
+]);
 
 // make user[1] an admin:
 insert_into_table("admins", [

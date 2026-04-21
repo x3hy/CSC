@@ -197,7 +197,7 @@ function generate_password($raw){
 
 // Gets a valued array of items from a $table based on the
 // given $id. returns the $props as a valued array.
-// E.g
+// E.g:
 // [
 //     "my_prop_name" => "value from table!"
 // ]
@@ -226,6 +226,60 @@ function get_property_by_id($table, $id, array $props) {
     return $return;
 }
 
+
+function delete_row_by_id($table, $id) {
+    global $conn;
+	
+    $sql = "DELETE FROM `$table` WHERE id = ?";
+
+    try {
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+    } catch (mysqli_sql_exception $e) {
+        if (strpos($e->getMessage(), 're-prepare') !== false) {
+            // retry once
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        } else {
+            throw $e;
+        }
+    }
+
+    $ret = $stmt->affected_rows > 0;
+    $stmt->close();
+    return $ret;
+}
+
+
+// modifies properties at a given table and id:
+function set_property_by_id($table, $id, array $props) {
+    global $conn;
+
+    $columns="";
+	foreach ($props as $key => $value) {
+		$columns="$columns$key = $value," ;
+	}
+	
+	$columns = substr($columns, 0, -1);
+    $stmt = $conn->prepare("
+        UPDATE $table
+        SET $columns
+        WHERE id = ?
+    ");
+	
+	if (!$stmt) {
+        echo "error Prepare failed: " . $conn->error;
+		return false;
+	}
+
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+	$stmt->close();
+	return true;
+}
+
 // same as the other function, but this one gets properties
 // across ALL rows.
 function get_properties_from_table($table, array $props) {
@@ -243,7 +297,7 @@ function get_properties_from_table($table, array $props) {
     ");
 
     if (!$stmt) {
-        return ["error" => "Prepare failed: " . $conn->error];
+        return false;
     }
 
     $stmt->execute();
@@ -263,6 +317,9 @@ function get_properties_from_table($table, array $props) {
     return $data;
 }
 
+function get_users_list(){
+}
+	
 
 function validate_password($password)
 {
@@ -370,16 +427,35 @@ function user_exist(string $username)
 	return $user['id'];
 }
 
-function sign_up(string $username, string $hashed_password)
+function sign_up(string $username, string $hashed_password, $display)
 {
 	if (user_exist($username) != false)
+		// User already exists
 		return false;
 	
-	// Create the new user
-	return insert_into_table("users", [
+	$props = [
 		"username" => $username,
 		"password" => $hashed_password
-	]);
+	];
+	
+	// Set the display name if it is given.
+	if ($display !== null)
+		$props["display"] = $display;
+	
+	// Create the new user
+	return insert_into_table("users", $props);
+}
+
+
+// Sets a user as an admin
+function make_user_admin(string $usrename, string $hashed_password){
+	$user_id = user_exist($username);
+	if ($user_id == false)
+		// User does not exist.
+		return false;
+	
+	$props = ["user_id" => $user_id];
+	return insert_into_table("admins", $props);
 }
 
 // fetches the users ID from the prior function, then if the id

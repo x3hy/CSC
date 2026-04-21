@@ -31,7 +31,7 @@ function clear_error(){
 }
 
 // Creates a new user
-async function sign_up(username, password){
+async function sign_up(username, password, display){
 	// hash the password
 	password = await generate_password(password);
 		
@@ -39,7 +39,7 @@ async function sign_up(username, password){
 	localStorage.setItem(_username, username);
 	localStorage.setItem(_password, password);
 	
-	return await POST({"call":"create_user"});
+	return await POST({"call":"create_user", "content": display});
 }
 
 // Validates a username using server api
@@ -86,9 +86,8 @@ _form_switch.addEventListener("click", (e) => {
 // change the page over to the sign_up page..
 const params = new URLSearchParams(String(location.href).split("?")[1]);
 for (let pair of params.entries()) {
-	console.log(pair);
-	if (pair[0] == "set_page") {
-		if (pair[1] == "sign_up")
+	if (pair[0] == "sign") {
+		if (pair[1] == "up")
 			_form.classList.remove("form-sign-in");
 		else 
 			_form.classList.add("form-sign-in");
@@ -130,6 +129,9 @@ _form.addEventListener("submit", (e)=>{
 			set_error("Password is required");
 			return
 		};
+		
+		if (data.display == "")
+			delete data.display
 
 		delete data.passwordconfirm;
 		
@@ -162,7 +164,10 @@ _form.addEventListener("submit", (e)=>{
 					return false;
 				}
 				// Sign up user:
-				const sign_up_resp = await sign_up(data.username, data.password);
+				const sign_up_resp = await sign_up(data.username, data.password,
+					(data.display != undefined) ? data.display : null
+				);
+				
 				if (await  sign_up_resp.status != 0){
 					set_error(await sign_up_resp.message);
 					return false;

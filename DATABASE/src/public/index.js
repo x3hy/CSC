@@ -33,6 +33,36 @@ function get_local_auth(){
 	return auth;
 }
 
+// self explanitory..
+async function delete_user(id){
+	let resp;
+	if (id != undefined){
+		if (await is_user_admin() == false)
+			return false; // you dont have permission
+		
+		if (!window.confirm(`Are you sure you want to delete user #${id}`))
+			return false;
+		
+		resp = await POST({
+			"call":"delete_user", "content": id
+		});
+	} else {
+		if (!window.confirm(`Are you sure you want to delete your account (${await get_name()})`))
+			return false;
+			
+		resp = await POST({
+			"call":"delete_self"
+		});
+	}
+	
+	if (await resp.status != 0)
+		return false; // server responded badly
+	
+	if (id == undefined)
+		open_error("Account Deleted.", 200);
+	return true;
+}
+
 // Posts data to the back-end API
 async function POST(content, callback = console.error) {
 	const validate_php_file= __DIR__ + "/../../db/client.php";
@@ -82,6 +112,13 @@ function open_home(){
 	location.href = __DIR__ + "/../../";
 }
 
+function open_error(reason, code){
+	let path = __DIR__ + "/../../error.html";
+	if (reason != undefined)
+		path+=`?q=${reason}&c=${code}`;
+	location.href = path;
+}
+
 // Signs in a user
 async function sign_in(username, password){
 	// hash the password
@@ -114,11 +151,15 @@ async function get_name() {
 }
 
 // returns a boolian for if the user is or is not an admin
-async function is_user_admin(){
+async function is_user_admin(id){
 	const validate_resp = await validate_session();
 	if (validate_resp == false)
 		return false;
-	const resp = await POST({"call":"is_admin"});
+	let resp;
+	if (id !== undefined){
+		resp = await POST({"call":"is_user_admin", "content": $id});
+	} else resp = await POST({"call":"is_admin"});
+	
 	if (resp.status != 0)
 		return true;
 	return false;
@@ -130,7 +171,7 @@ async function is_user_admin(){
 async function validate_session_permanence(){
 	if (await validate_session() == false){
 		sign_out();
-		open_sign_in();
+		open_error("You are not signed in.", 202);
 	}
 }
 
@@ -166,7 +207,7 @@ async function init_auth_elements(){
 			element.classList.remove(admin_class);
 		});
 	}
-	
+
 	const name = await get_name();
 	document.querySelectorAll(".display")
 	.forEach(async (element) => {
