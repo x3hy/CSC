@@ -21,15 +21,57 @@ $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 define("APP_START", true);
 require __DIR__ .'/include.php';
+ob_start();
 
 // return data "struct"
 function client_exit($status, $message){
+	ob_end_clean();
 	echo json_encode([
 		"status" => $status,
 		"message" => $message,
 	]);
-	exit;
+	exit; 
 }
+
+// gets the comments (and their scores and user values)
+function client_get_posts($parent){
+	global $conn;
+	$posts = false;
+	if ($parent == null)
+		$posts = get_root_posts();
+	else $posts = get_post_children($parent);
+	
+	if ($posts === false)
+		return [1, "Post does not exist"];
+	
+    foreach ($posts as $index => $post) {
+        $posts[$index]["score"] = get_post_score($post["id"]);
+		$user = get_username_by_id($post["user_id"]);
+		$posts[$index]["username"] = $user[0];
+		$posts[$index]["display"] = $user[1];
+		$posts[$index]["comment_count"] = get_post_children_count($post["id"]);
+    }
+
+    return [0, $posts];
+}
+
+function client_get_post(int $post_id){
+	if (!post_exist($post_id))
+		return [1, "Post does not exist"];
+	
+	$post = get_post($post_id);
+	if ($post == false)
+		return [1, "Post could not be fetched"];
+	
+	$post["score"] = get_post_score($post["id"]);
+	
+	$user = get_username_by_id($post["user_id"]);
+	$post["username"] = $user[0];
+	$post["display"] = $user[1];
+	
+	return [0, $post];
+}
+	
 
 // Very verbose validate_username function
 function client_validate_username(string $username)
@@ -44,8 +86,10 @@ function client_delete_user($user_id){
 	if (!isset($user_id))
 		return [1, "Invalid UserID provided."];
 	
-	delete_row_by_id("users", $user_id);
-	return [0, "User #$ret deleted"];
+	$ret = delete_row_by_id("users", $user_id);
+	$code = ($ret === false) ? 1 : 0;
+	$msg = ($ret === false) ? "User not deleted" : "User #$user_id deleted";
+	return [$code, $msg];
 }
 
 // deletes the current user
@@ -58,10 +102,7 @@ function client_delete_self(string $username){
 }
 
 function client_get_users_list(){
-	$ret = get_properties_from_table("users", [
-		"username","display","id", "password"
-	]);
-	
+	$ret = get_user_list();
 	$code = ($ret !== false) ? 0 : 1;
 	$msg = ($ret !== false) ? $ret : "Failed to fetch users";
 	return [$code, $msg];
@@ -89,12 +130,34 @@ function client_validate_password(string $password)
 function client_create_user(string $username, string $hashed_password, $display)
 {
 	// Suppress output
-	ob_start();
 	$ret = sign_up($username, $hashed_password, $display);
-	ob_end_clean();
 	
 	$code = ($ret === false) ? 1 : 0;
 	$msg = ($ret === false) ? "Failed to create user (perhaps a user with this username already exists)" : "Created User";
+	return [$code, $msg];
+}
+
+function client_toggle_admin(int $user_id){
+	$admin = is_user_admin_by_id($user_id);
+	$ret = false;
+	$msg = null;
+	
+	if ($admin === false){
+		// user is not an admin
+		$ret = insert_into_table("admins", ["user_id" => $user_id]);
+		if ($ret === false)
+			$msg = "Failed to make user admin";
+		else $msg = "Made user #$user_id admin";
+	} else {
+		// user is already an admin
+		$ret = delete_row_by_id("admins", $admin);
+		if ($ret === false){
+			$msg = "Failed to revoke admin";
+		}
+		else $msg = "Revoked admin for user #$user_id";
+	}
+	
+	$code = ($ret === false) ? 1 : 0;
 	return [$code, $msg];
 }
 
@@ -102,15 +165,22 @@ function client_create_user(string $username, string $hashed_password, $display)
 function client_is_admin(string $username, string $hashed_password)
 {
 	$ret = is_user_admin($username, $hashed_password);
-	$code = ($ret === false) ? 0 : 1;
+	$code = ($ret === false) ? 1 : 0;
 	$msg = ($ret === false) ? "User is not an admin" : "User is an admin at id: $ret";
+	return [$code, $msg];
+}
+
+function client_is_admin_by_id(int $user_id){
+	$ret = is_user_admin_by_id($user_id);
+	$code = ($ret === false) ? 1 : 0;
+	$msg = ($ret === false) ? "Failed to check admin status" : "Admin is a user at #$ret";
 	return [$code, $msg];
 }
 
 // gets the display name of a given user
 function client_get_display(string $username)
 {
-	$ret = user_exist($username);
+	$ret = username_exist($username);
 	if ($ret !== false){
 		$user_data = get_property_by_id("users", $ret, ["display"]);
 		if ($user_data["display"] !== null)
@@ -144,6 +214,9 @@ function ring_0($data)
 		"create_user" => client_create_user($data["auth"]["username"], $data["auth"]["password"], $data["content"]),
 		"is_admin" => client_is_admin($data["auth"]["username"], $data["auth"]["password"]),
 		"get_display" => client_get_display($data["content"]),
+		"is_admin_id" => client_is_admin_by_id($data["content"]),
+		"get_posts" => client_get_posts($data["content"]),
+		"get_post" => client_get_post($data["content"]),
 				 
 		// ping!  (server function)
 		"ping" => client_ping(),
@@ -170,6 +243,7 @@ function ring_2($data)
 		"admin_ping" => client_ping(),
 		"list_users" => client_get_users_list(),
 		"delete_user" => client_delete_user($data["content"]),
+		"toggle_admin" => client_toggle_admin($data["content"]),
 
 		default => null
 	};

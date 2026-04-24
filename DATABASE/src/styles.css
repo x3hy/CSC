@@ -31,3 +31,20 @@
 
 .auth, .admin, #login-form-errors {display:none;}
 form {width:100%;}
+
+/* table stuff */
+th {user-select:none}
+th.sorted-asc::after {
+	content: "▴";
+	margin-left: 1ch;
+}
+th.sorted-desc::after {
+	content: "▾";
+	margin-left: 1ch;
+}
+
+svg path { fill: var(--color-link)};
+
+.word-two {display:none}
+.switch .word-two {display: auto}
+.switch .word-one {display: none;

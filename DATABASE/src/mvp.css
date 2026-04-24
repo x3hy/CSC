@@ -58,6 +58,18 @@ i button {
 	background: var(--color-warning);
 }
 
+.warning {
+	color: var(--color-warning);
+}
+
+svg path {
+	fill: var(--color-link);
+}
+
+i svg path {
+	fill: var(--color-warning);
+}
+
 b button {
 	background:transparent;
 	color: var(--color-link);

@@ -6,21 +6,23 @@
 	<title id="title">Home</title>
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
+	<script>
+		validate_session()
+	</script>
 </head>
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Home</h2>
+			<h2><span class="logo"></span>/Dashboard</h2>
 			<ul>
 				<li><a href="index.html">Home</a></li>
 				<span class="auth">
 					<li><a href="create.html">Create</a></li>
 					<li><a href="user.html">Profile</a></li>
-					<li><a href="dashboard.html">Dashboard</a></li>
 				</span>
 				<li><a href="feed.html">Feed</a></li>
 				<span class="auth">
-					<li onclick="sign_out();location.reload()">Sign out</li>
+					<li onclick="sign_out();open_home()"><a>Sign out</a></li>
 				</span>
 				<span class="non-auth">
 					<li><a href="sign_in.html">Sign In</a></li>
@@ -37,9 +39,6 @@
 				into an account (<span class="display"></span>), Click the "Open Dashboard" button in the top left to start creating!</span>
 			</p>
 			<hr>
-			<p>
-				<ul>
-			</p>
 		</section>
 	</header>
 </body>

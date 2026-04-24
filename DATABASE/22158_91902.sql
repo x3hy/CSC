@@ -3,7 +3,7 @@
 -- Host: localhost	Database: 22158_91902
 -- ------------------------------------------------------
 -- Server version 	8.0.45-0ubuntu0.22.04.1
--- Date: Tue, 21 Apr 2026 09:29:28 +0000
+-- Date: Fri, 24 Apr 2026 12:49:35 +0000
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,11 +25,11 @@
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admins` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
+  `user_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,105 +39,12 @@ CREATE TABLE `admins` (
 LOCK TABLES `admins` WRITE;
 /*!40000 ALTER TABLE `admins` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `admins` VALUES (1,2);
+INSERT INTO `admins` VALUES (1,1);
 /*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
 -- Dumped table `admins` with 1 row(s)
---
-
---
--- Table structure for table `comments`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `comments` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int unsigned NOT NULL,
-  `content` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `time_issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `post_id` (`post_id`),
-  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `comments`
---
-
-LOCK TABLES `comments` WRITE;
-/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-SET autocommit=0;
-/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `comments` with 0 row(s)
---
-
---
--- Table structure for table `orders`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orders` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `note` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_paid` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `orders`
---
-
-LOCK TABLES `orders` WRITE;
-/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-SET autocommit=0;
-INSERT INTO `orders` VALUES (1,'test123','test1234','2026-04-15 04:16:24',0),(2,'test123','test1234','2026-04-15 11:43:14',0),(3,'test123','test1234','2026-04-20 02:25:32',0),(4,'test123','test1234','2026-04-20 02:38:54',0),(5,'test123','test1234','2026-04-20 02:38:54',0),(6,'test123','test1234','2026-04-20 21:37:53',0),(7,'test123','test1234','2026-04-20 21:38:18',0),(8,'test123','test1234','2026-04-20 21:38:20',0),(9,'test123','test1234','2026-04-20 21:38:27',0),(10,'test123','test1234','2026-04-20 21:38:43',0),(11,'test123','test1234','2026-04-20 21:40:09',0),(12,'test123','test1234','2026-04-20 21:40:10',0),(13,'test123','test1234','2026-04-20 21:40:10',0),(14,'test123','test1234','2026-04-20 21:40:11',0),(15,'test123','test1234','2026-04-20 21:40:11',0),(16,'test123','test1234','2026-04-20 21:40:11',0),(17,'test123','test1234','2026-04-20 21:40:12',0),(18,'test123','test1234','2026-04-20 21:40:12',0),(19,'test123','test1234','2026-04-20 21:42:31',0),(20,'test123','test1234','2026-04-20 21:42:41',0),(21,'test123','test1234','2026-04-20 21:42:53',0),(22,'test123','test1234','2026-04-20 21:43:10',0),(23,'test123','test1234','2026-04-20 21:44:39',0),(24,'test123','test1234','2026-04-20 21:44:42',0),(25,'test123','test1234','2026-04-20 21:44:48',0),(26,'test123','test1234','2026-04-21 08:42:08',0);
-/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `orders` with 26 row(s)
---
-
---
--- Table structure for table `post`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `post` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `description` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `post_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `post`
---
-
-LOCK TABLES `post` WRITE;
-/*!40000 ALTER TABLE `post` DISABLE KEYS */;
-SET autocommit=0;
-/*!40000 ALTER TABLE `post` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `post` with 0 row(s)
 --
 
 --
@@ -148,13 +55,16 @@ COMMIT;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `posts` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
+  `user_id` int unsigned DEFAULT NULL,
   `description` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `time_issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `parent_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=421 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,79 +74,12 @@ CREATE TABLE `posts` (
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
 SET autocommit=0;
+INSERT INTO `posts` VALUES (1,7,'this is post #1','2026-04-24 08:28:58',NULL),(2,6,'this is post #2','2026-04-24 08:28:58',NULL),(3,3,'this is post #3','2026-04-24 08:28:58',NULL),(4,1,'this is post #4','2026-04-24 08:28:58',NULL),(5,6,'this is post #5','2026-04-24 08:28:58',NULL),(6,15,'this is post #6','2026-04-24 08:28:58',NULL),(7,12,'this is post #7','2026-04-24 08:28:58',NULL),(8,9,'this is post #8','2026-04-24 08:28:58',NULL),(9,10,'this is post #9','2026-04-24 08:28:58',NULL),(10,11,'this is post #10','2026-04-24 08:28:58',NULL),(11,14,'this is post #11','2026-04-24 08:28:58',NULL),(12,16,'this is post #12','2026-04-24 08:28:58',NULL),(13,20,'this is post #13','2026-04-24 08:28:58',NULL),(14,10,'this is post #14','2026-04-24 08:28:58',NULL),(15,6,'this is post #15','2026-04-24 08:28:58',NULL),(16,14,'this is post #16','2026-04-24 08:28:58',NULL),(17,9,'this is post #17','2026-04-24 08:28:58',NULL),(18,4,'this is post #18','2026-04-24 08:28:58',NULL),(19,8,'this is post #19','2026-04-24 08:28:58',NULL),(20,6,'this is post #20','2026-04-24 08:28:58',NULL),(21,6,'this is SUBpost #1-1','2026-04-24 08:28:58',15),(22,20,'this is SUBpost #1-2','2026-04-24 08:28:58',12),(23,2,'this is SUBpost #1-3','2026-04-24 08:28:58',18),(24,7,'this is SUBpost #1-4','2026-04-24 08:28:58',16),(25,10,'this is SUBpost #1-5','2026-04-24 08:28:58',8),(26,2,'this is SUBpost #1-6','2026-04-24 08:28:58',18),(27,1,'this is SUBpost #1-7','2026-04-24 08:28:58',15),(28,4,'this is SUBpost #1-8','2026-04-24 08:28:58',8),(29,12,'this is SUBpost #1-9','2026-04-24 08:28:58',13),(30,16,'this is SUBpost #1-10','2026-04-24 08:28:58',9),(31,4,'this is SUBpost #1-11','2026-04-24 08:28:58',10),(32,19,'this is SUBpost #1-12','2026-04-24 08:28:58',4),(33,17,'this is SUBpost #1-13','2026-04-24 08:28:58',10),(34,5,'this is SUBpost #1-14','2026-04-24 08:28:58',9),(35,2,'this is SUBpost #1-15','2026-04-24 08:28:58',16),(36,6,'this is SUBpost #1-16','2026-04-24 08:28:58',2),(37,13,'this is SUBpost #1-17','2026-04-24 08:28:58',10),(38,13,'this is SUBpost #1-18','2026-04-24 08:28:58',4),(39,15,'this is SUBpost #1-19','2026-04-24 08:28:58',10),(40,17,'this is SUBpost #1-20','2026-04-24 08:28:58',4),(41,11,'this is SUBpost #2-1','2026-04-24 08:28:58',6),(42,12,'this is SUBpost #2-2','2026-04-24 08:28:58',8),(43,13,'this is SUBpost #2-3','2026-04-24 08:28:58',3),(44,11,'this is SUBpost #2-4','2026-04-24 08:28:58',18),(45,19,'this is SUBpost #2-5','2026-04-24 08:28:58',4),(46,18,'this is SUBpost #2-6','2026-04-24 08:28:58',5),(47,7,'this is SUBpost #2-7','2026-04-24 08:28:58',4),(48,14,'this is SUBpost #2-8','2026-04-24 08:28:58',15),(49,12,'this is SUBpost #2-9','2026-04-24 08:28:58',16),(50,8,'this is SUBpost #2-10','2026-04-24 08:28:58',2),(51,16,'this is SUBpost #2-11','2026-04-24 08:28:58',20),(52,1,'this is SUBpost #2-12','2026-04-24 08:28:58',18),(53,5,'this is SUBpost #2-13','2026-04-24 08:28:58',6),(54,7,'this is SUBpost #2-14','2026-04-24 08:28:58',15),(55,11,'this is SUBpost #2-15','2026-04-24 08:28:58',3),(56,20,'this is SUBpost #2-16','2026-04-24 08:28:58',10),(57,6,'this is SUBpost #2-17','2026-04-24 08:28:58',19),(58,17,'this is SUBpost #2-18','2026-04-24 08:28:58',10),(59,14,'this is SUBpost #2-19','2026-04-24 08:28:58',2),(60,18,'this is SUBpost #2-20','2026-04-24 08:28:58',15),(61,1,'this is SUBpost #3-1','2026-04-24 08:28:58',4),(62,16,'this is SUBpost #3-2','2026-04-24 08:28:58',4),(63,5,'this is SUBpost #3-3','2026-04-24 08:28:58',18),(64,8,'this is SUBpost #3-4','2026-04-24 08:28:58',4),(65,13,'this is SUBpost #3-5','2026-04-24 08:28:58',20),(66,2,'this is SUBpost #3-6','2026-04-24 08:28:58',2),(67,18,'this is SUBpost #3-7','2026-04-24 08:28:58',12),(68,7,'this is SUBpost #3-8','2026-04-24 08:28:58',17),(69,14,'this is SUBpost #3-9','2026-04-24 08:28:58',18),(70,17,'this is SUBpost #3-10','2026-04-24 08:28:58',14),(71,5,'this is SUBpost #3-11','2026-04-24 08:28:58',5),(72,6,'this is SUBpost #3-12','2026-04-24 08:28:58',10),(73,7,'this is SUBpost #3-13','2026-04-24 08:28:58',5),(74,6,'this is SUBpost #3-14','2026-04-24 08:28:58',14),(75,10,'this is SUBpost #3-15','2026-04-24 08:28:58',19),(76,19,'this is SUBpost #3-16','2026-04-24 08:28:58',12),(77,9,'this is SUBpost #3-17','2026-04-24 08:28:58',1),(78,17,'this is SUBpost #3-18','2026-04-24 08:28:58',19),(79,11,'this is SUBpost #3-19','2026-04-24 08:28:58',12),(80,17,'this is SUBpost #3-20','2026-04-24 08:28:58',14),(81,14,'this is SUBpost #4-1','2026-04-24 08:28:58',16),(82,4,'this is SUBpost #4-2','2026-04-24 08:28:58',11),(83,16,'this is SUBpost #4-3','2026-04-24 08:28:58',20),(84,5,'this is SUBpost #4-4','2026-04-24 08:28:58',5),(85,11,'this is SUBpost #4-5','2026-04-24 08:28:58',4),(86,2,'this is SUBpost #4-6','2026-04-24 08:28:58',18),(87,19,'this is SUBpost #4-7','2026-04-24 08:28:58',9),(88,10,'this is SUBpost #4-8','2026-04-24 08:28:58',19),(89,7,'this is SUBpost #4-9','2026-04-24 08:28:58',3),(90,16,'this is SUBpost #4-10','2026-04-24 08:28:58',3),(91,7,'this is SUBpost #4-11','2026-04-24 08:28:58',5),(92,11,'this is SUBpost #4-12','2026-04-24 08:28:58',10),(93,12,'this is SUBpost #4-13','2026-04-24 08:28:58',1),(94,11,'this is SUBpost #4-14','2026-04-24 08:28:58',3),(95,9,'this is SUBpost #4-15','2026-04-24 08:28:58',9),(96,10,'this is SUBpost #4-16','2026-04-24 08:28:58',9),(97,9,'this is SUBpost #4-17','2026-04-24 08:28:58',18),(98,12,'this is SUBpost #4-18','2026-04-24 08:28:58',17),(99,2,'this is SUBpost #4-19','2026-04-24 08:28:58',18),(100,16,'this is SUBpost #4-20','2026-04-24 08:28:58',19),(101,19,'this is SUBpost #5-1','2026-04-24 08:28:58',8),(102,4,'this is SUBpost #5-2','2026-04-24 08:28:58',4),(103,16,'this is SUBpost #5-3','2026-04-24 08:28:58',14),(104,11,'this is SUBpost #5-4','2026-04-24 08:28:58',6),(105,4,'this is SUBpost #5-5','2026-04-24 08:28:58',7),(106,13,'this is SUBpost #5-6','2026-04-24 08:28:58',15),(107,3,'this is SUBpost #5-7','2026-04-24 08:28:58',1),(108,10,'this is SUBpost #5-8','2026-04-24 08:28:58',4),(109,6,'this is SUBpost #5-9','2026-04-24 08:28:58',8),(110,4,'this is SUBpost #5-10','2026-04-24 08:28:58',6),(111,10,'this is SUBpost #5-11','2026-04-24 08:28:58',4),(112,13,'this is SUBpost #5-12','2026-04-24 08:28:58',4),(113,1,'this is SUBpost #5-13','2026-04-24 08:28:58',9),(114,3,'this is SUBpost #5-14','2026-04-24 08:28:58',13),(115,19,'this is SUBpost #5-15','2026-04-24 08:28:58',5),(116,11,'this is SUBpost #5-16','2026-04-24 08:28:58',15),(117,15,'this is SUBpost #5-17','2026-04-24 08:28:58',1),(118,12,'this is SUBpost #5-18','2026-04-24 08:28:58',11),(119,19,'this is SUBpost #5-19','2026-04-24 08:28:58',20),(120,4,'this is SUBpost #5-20','2026-04-24 08:28:58',14),(121,18,'this is SUBpost #6-1','2026-04-24 08:28:58',7),(122,16,'this is SUBpost #6-2','2026-04-24 08:28:58',13),(123,8,'this is SUBpost #6-3','2026-04-24 08:28:58',12),(124,6,'this is SUBpost #6-4','2026-04-24 08:28:58',17),(125,11,'this is SUBpost #6-5','2026-04-24 08:28:58',12),(126,10,'this is SUBpost #6-6','2026-04-24 08:28:58',14),(127,10,'this is SUBpost #6-7','2026-04-24 08:28:58',16),(128,1,'this is SUBpost #6-8','2026-04-24 08:28:58',16),(129,11,'this is SUBpost #6-9','2026-04-24 08:28:58',8),(130,18,'this is SUBpost #6-10','2026-04-24 08:28:58',4),(131,16,'this is SUBpost #6-11','2026-04-24 08:28:58',14),(132,9,'this is SUBpost #6-12','2026-04-24 08:28:58',13),(133,5,'this is SUBpost #6-13','2026-04-24 08:28:58',11),(134,6,'this is SUBpost #6-14','2026-04-24 08:28:58',1),(135,12,'this is SUBpost #6-15','2026-04-24 08:28:58',17),(136,7,'this is SUBpost #6-16','2026-04-24 08:28:58',14),(137,5,'this is SUBpost #6-17','2026-04-24 08:28:58',2),(138,6,'this is SUBpost #6-18','2026-04-24 08:28:58',13),(139,5,'this is SUBpost #6-19','2026-04-24 08:28:58',10),(140,14,'this is SUBpost #6-20','2026-04-24 08:28:58',15),(141,19,'this is SUBpost #7-1','2026-04-24 08:28:58',16),(142,19,'this is SUBpost #7-2','2026-04-24 08:28:58',7),(143,6,'this is SUBpost #7-3','2026-04-24 08:28:58',2),(144,14,'this is SUBpost #7-4','2026-04-24 08:28:58',17),(145,8,'this is SUBpost #7-5','2026-04-24 08:28:58',4),(146,12,'this is SUBpost #7-6','2026-04-24 08:28:58',8),(147,13,'this is SUBpost #7-7','2026-04-24 08:28:58',1),(148,16,'this is SUBpost #7-8','2026-04-24 08:28:58',8),(149,7,'this is SUBpost #7-9','2026-04-24 08:28:58',18),(150,6,'this is SUBpost #7-10','2026-04-24 08:28:58',7),(151,1,'this is SUBpost #7-11','2026-04-24 08:28:58',11),(152,9,'this is SUBpost #7-12','2026-04-24 08:28:58',11),(153,16,'this is SUBpost #7-13','2026-04-24 08:28:58',15),(154,5,'this is SUBpost #7-14','2026-04-24 08:28:58',9),(155,4,'this is SUBpost #7-15','2026-04-24 08:28:58',7),(156,7,'this is SUBpost #7-16','2026-04-24 08:28:58',10),(157,2,'this is SUBpost #7-17','2026-04-24 08:28:58',16),(158,3,'this is SUBpost #7-18','2026-04-24 08:28:58',5),(159,20,'this is SUBpost #7-19','2026-04-24 08:28:58',13),(160,6,'this is SUBpost #7-20','2026-04-24 08:28:58',5),(161,20,'this is SUBpost #8-1','2026-04-24 08:28:58',10),(162,10,'this is SUBpost #8-2','2026-04-24 08:28:58',18),(163,7,'this is SUBpost #8-3','2026-04-24 08:28:58',4),(164,20,'this is SUBpost #8-4','2026-04-24 08:28:58',16),(165,13,'this is SUBpost #8-5','2026-04-24 08:28:58',9),(166,4,'this is SUBpost #8-6','2026-04-24 08:28:58',19),(167,15,'this is SUBpost #8-7','2026-04-24 08:28:58',12),(168,15,'this is SUBpost #8-8','2026-04-24 08:28:58',20),(169,5,'this is SUBpost #8-9','2026-04-24 08:28:58',4),(170,14,'this is SUBpost #8-10','2026-04-24 08:28:58',12),(171,1,'this is SUBpost #8-11','2026-04-24 08:28:58',19),(172,10,'this is SUBpost #8-12','2026-04-24 08:28:58',16),(173,18,'this is SUBpost #8-13','2026-04-24 08:28:58',17),(174,10,'this is SUBpost #8-14','2026-04-24 08:28:58',14),(175,6,'this is SUBpost #8-15','2026-04-24 08:28:58',5),(176,1,'this is SUBpost #8-16','2026-04-24 08:28:58',3),(177,7,'this is SUBpost #8-17','2026-04-24 08:28:58',16),(178,15,'this is SUBpost #8-18','2026-04-24 08:28:58',10),(179,12,'this is SUBpost #8-19','2026-04-24 08:28:58',20),(180,11,'this is SUBpost #8-20','2026-04-24 08:28:58',4),(181,16,'this is SUBpost #9-1','2026-04-24 08:28:58',10),(182,7,'this is SUBpost #9-2','2026-04-24 08:28:58',7),(183,17,'this is SUBpost #9-3','2026-04-24 08:28:58',16),(184,3,'this is SUBpost #9-4','2026-04-24 08:28:58',3),(185,20,'this is SUBpost #9-5','2026-04-24 08:28:58',19),(186,19,'this is SUBpost #9-6','2026-04-24 08:28:58',1),(187,18,'this is SUBpost #9-7','2026-04-24 08:28:58',3),(188,12,'this is SUBpost #9-8','2026-04-24 08:28:58',9),(189,3,'this is SUBpost #9-9','2026-04-24 08:28:58',6),(190,3,'this is SUBpost #9-10','2026-04-24 08:28:58',1),(191,20,'this is SUBpost #9-11','2026-04-24 08:28:58',4),(192,11,'this is SUBpost #9-12','2026-04-24 08:28:58',9),(193,11,'this is SUBpost #9-13','2026-04-24 08:28:58',18),(194,14,'this is SUBpost #9-14','2026-04-24 08:28:58',17),(195,9,'this is SUBpost #9-15','2026-04-24 08:28:58',2),(196,5,'this is SUBpost #9-16','2026-04-24 08:28:58',4),(197,8,'this is SUBpost #9-17','2026-04-24 08:28:58',20),(198,13,'this is SUBpost #9-18','2026-04-24 08:28:58',3),(199,17,'this is SUBpost #9-19','2026-04-24 08:28:58',2),(200,9,'this is SUBpost #9-20','2026-04-24 08:28:58',4),(201,20,'this is SUBpost #10-1','2026-04-24 08:28:58',20),(202,16,'this is SUBpost #10-2','2026-04-24 08:28:58',3),(203,16,'this is SUBpost #10-3','2026-04-24 08:28:58',5),(204,16,'this is SUBpost #10-4','2026-04-24 08:28:58',7),(205,4,'this is SUBpost #10-5','2026-04-24 08:28:58',15),(206,18,'this is SUBpost #10-6','2026-04-24 08:28:58',18),(207,5,'this is SUBpost #10-7','2026-04-24 08:28:58',13),(208,20,'this is SUBpost #10-8','2026-04-24 08:28:58',3),(209,11,'this is SUBpost #10-9','2026-04-24 08:28:58',1),(210,16,'this is SUBpost #10-10','2026-04-24 08:28:58',5),(211,20,'this is SUBpost #10-11','2026-04-24 08:28:58',18),(212,9,'this is SUBpost #10-12','2026-04-24 08:28:58',5),(213,1,'this is SUBpost #10-13','2026-04-24 08:28:58',18),(214,19,'this is SUBpost #10-14','2026-04-24 08:28:58',14),(215,14,'this is SUBpost #10-15','2026-04-24 08:28:58',6),(216,20,'this is SUBpost #10-16','2026-04-24 08:28:58',14),(217,3,'this is SUBpost #10-17','2026-04-24 08:28:58',1),(218,13,'this is SUBpost #10-18','2026-04-24 08:28:58',3),(219,5,'this is SUBpost #10-19','2026-04-24 08:28:58',11),(220,13,'this is SUBpost #10-20','2026-04-24 08:28:58',7),(221,7,'this is SUBpost #11-1','2026-04-24 08:28:58',14),(222,6,'this is SUBpost #11-2','2026-04-24 08:28:58',18),(223,20,'this is SUBpost #11-3','2026-04-24 08:28:58',17),(224,20,'this is SUBpost #11-4','2026-04-24 08:28:58',13),(225,9,'this is SUBpost #11-5','2026-04-24 08:28:58',3),(226,8,'this is SUBpost #11-6','2026-04-24 08:28:58',13),(227,14,'this is SUBpost #11-7','2026-04-24 08:28:58',18),(228,10,'this is SUBpost #11-8','2026-04-24 08:28:58',19),(229,14,'this is SUBpost #11-9','2026-04-24 08:28:58',20),(230,15,'this is SUBpost #11-10','2026-04-24 08:28:58',4),(231,1,'this is SUBpost #11-11','2026-04-24 08:28:58',19),(232,10,'this is SUBpost #11-12','2026-04-24 08:28:58',12),(233,19,'this is SUBpost #11-13','2026-04-24 08:28:58',8),(234,8,'this is SUBpost #11-14','2026-04-24 08:28:58',10),(235,1,'this is SUBpost #11-15','2026-04-24 08:28:58',4),(236,9,'this is SUBpost #11-16','2026-04-24 08:28:58',11),(237,10,'this is SUBpost #11-17','2026-04-24 08:28:58',16),(238,7,'this is SUBpost #11-18','2026-04-24 08:28:58',14),(239,8,'this is SUBpost #11-19','2026-04-24 08:28:58',18),(240,17,'this is SUBpost #11-20','2026-04-24 08:28:58',17),(241,4,'this is SUBpost #12-1','2026-04-24 08:28:58',12),(242,14,'this is SUBpost #12-2','2026-04-24 08:28:58',7),(243,8,'this is SUBpost #12-3','2026-04-24 08:28:58',20),(244,20,'this is SUBpost #12-4','2026-04-24 08:28:58',10),(245,16,'this is SUBpost #12-5','2026-04-24 08:28:58',13),(246,14,'this is SUBpost #12-6','2026-04-24 08:28:58',4),(247,13,'this is SUBpost #12-7','2026-04-24 08:28:58',12),(248,8,'this is SUBpost #12-8','2026-04-24 08:28:58',15),(249,3,'this is SUBpost #12-9','2026-04-24 08:28:58',16),(250,10,'this is SUBpost #12-10','2026-04-24 08:28:58',14),(251,8,'this is SUBpost #12-11','2026-04-24 08:28:58',17),(252,20,'this is SUBpost #12-12','2026-04-24 08:28:58',12),(253,9,'this is SUBpost #12-13','2026-04-24 08:28:58',17),(254,15,'this is SUBpost #12-14','2026-04-24 08:28:58',3),(255,11,'this is SUBpost #12-15','2026-04-24 08:28:58',17),(256,2,'this is SUBpost #12-16','2026-04-24 08:28:58',7),(257,20,'this is SUBpost #12-17','2026-04-24 08:28:58',10),(258,10,'this is SUBpost #12-18','2026-04-24 08:28:58',2),(259,4,'this is SUBpost #12-19','2026-04-24 08:28:58',15),(260,10,'this is SUBpost #12-20','2026-04-24 08:28:58',18),(261,12,'this is SUBpost #13-1','2026-04-24 08:28:58',16),(262,13,'this is SUBpost #13-2','2026-04-24 08:28:58',6),(263,13,'this is SUBpost #13-3','2026-04-24 08:28:58',2),(264,17,'this is SUBpost #13-4','2026-04-24 08:28:58',11),(265,11,'this is SUBpost #13-5','2026-04-24 08:28:58',13),(266,20,'this is SUBpost #13-6','2026-04-24 08:28:58',19),(267,3,'this is SUBpost #13-7','2026-04-24 08:28:58',4),(268,1,'this is SUBpost #13-8','2026-04-24 08:28:58',11),(269,19,'this is SUBpost #13-9','2026-04-24 08:28:58',13),(270,4,'this is SUBpost #13-10','2026-04-24 08:28:58',4),(271,4,'this is SUBpost #13-11','2026-04-24 08:28:58',11),(272,11,'this is SUBpost #13-12','2026-04-24 08:28:58',14),(273,18,'this is SUBpost #13-13','2026-04-24 08:28:58',3),(274,10,'this is SUBpost #13-14','2026-04-24 08:28:58',19),(275,1,'this is SUBpost #13-15','2026-04-24 08:28:58',13),(276,11,'this is SUBpost #13-16','2026-04-24 08:28:58',19),(277,6,'this is SUBpost #13-17','2026-04-24 08:28:58',11),(278,9,'this is SUBpost #13-18','2026-04-24 08:28:58',15),(279,3,'this is SUBpost #13-19','2026-04-24 08:28:58',3),(280,15,'this is SUBpost #13-20','2026-04-24 08:28:58',7),(281,10,'this is SUBpost #14-1','2026-04-24 08:28:58',15),(282,16,'this is SUBpost #14-2','2026-04-24 08:28:58',1),(283,9,'this is SUBpost #14-3','2026-04-24 08:28:58',5),(284,10,'this is SUBpost #14-4','2026-04-24 08:28:58',10),(285,3,'this is SUBpost #14-5','2026-04-24 08:28:58',3),(286,10,'this is SUBpost #14-6','2026-04-24 08:28:58',5),(287,5,'this is SUBpost #14-7','2026-04-24 08:28:58',12),(288,2,'this is SUBpost #14-8','2026-04-24 08:28:58',6),(289,4,'this is SUBpost #14-9','2026-04-24 08:28:58',15),(290,2,'this is SUBpost #14-10','2026-04-24 08:28:58',3),(291,17,'this is SUBpost #14-11','2026-04-24 08:28:58',13),(292,10,'this is SUBpost #14-12','2026-04-24 08:28:58',13),(293,3,'this is SUBpost #14-13','2026-04-24 08:28:58',8),(294,16,'this is SUBpost #14-14','2026-04-24 08:28:58',12),(295,3,'this is SUBpost #14-15','2026-04-24 08:28:58',7),(296,10,'this is SUBpost #14-16','2026-04-24 08:28:58',19),(297,2,'this is SUBpost #14-17','2026-04-24 08:28:58',18),(298,3,'this is SUBpost #14-18','2026-04-24 08:28:58',3),(299,8,'this is SUBpost #14-19','2026-04-24 08:28:58',16),(300,2,'this is SUBpost #14-20','2026-04-24 08:28:58',11),(301,3,'this is SUBpost #15-1','2026-04-24 08:28:58',1),(302,16,'this is SUBpost #15-2','2026-04-24 08:28:58',2),(303,15,'this is SUBpost #15-3','2026-04-24 08:28:58',3),(304,20,'this is SUBpost #15-4','2026-04-24 08:28:58',10),(305,18,'this is SUBpost #15-5','2026-04-24 08:28:58',13),(306,11,'this is SUBpost #15-6','2026-04-24 08:28:58',16),(307,4,'this is SUBpost #15-7','2026-04-24 08:28:58',3),(308,1,'this is SUBpost #15-8','2026-04-24 08:28:58',16),(309,20,'this is SUBpost #15-9','2026-04-24 08:28:58',7),(310,10,'this is SUBpost #15-10','2026-04-24 08:28:58',4),(311,13,'this is SUBpost #15-11','2026-04-24 08:28:58',17),(312,3,'this is SUBpost #15-12','2026-04-24 08:28:58',9),(313,12,'this is SUBpost #15-13','2026-04-24 08:28:58',12),(314,15,'this is SUBpost #15-14','2026-04-24 08:28:58',4),(315,5,'this is SUBpost #15-15','2026-04-24 08:28:58',15),(316,10,'this is SUBpost #15-16','2026-04-24 08:28:58',18),(317,3,'this is SUBpost #15-17','2026-04-24 08:28:58',4),(318,4,'this is SUBpost #15-18','2026-04-24 08:28:58',1),(319,8,'this is SUBpost #15-19','2026-04-24 08:28:58',20),(320,11,'this is SUBpost #15-20','2026-04-24 08:28:58',12),(321,1,'this is SUBpost #16-1','2026-04-24 08:28:58',5),(322,5,'this is SUBpost #16-2','2026-04-24 08:28:58',10),(323,20,'this is SUBpost #16-3','2026-04-24 08:28:58',4),(324,5,'this is SUBpost #16-4','2026-04-24 08:28:58',19),(325,6,'this is SUBpost #16-5','2026-04-24 08:28:58',15),(326,12,'this is SUBpost #16-6','2026-04-24 08:28:58',14),(327,2,'this is SUBpost #16-7','2026-04-24 08:28:58',14),(328,15,'this is SUBpost #16-8','2026-04-24 08:28:58',18),(329,12,'this is SUBpost #16-9','2026-04-24 08:28:58',14),(330,15,'this is SUBpost #16-10','2026-04-24 08:28:58',7),(331,12,'this is SUBpost #16-11','2026-04-24 08:28:58',17),(332,3,'this is SUBpost #16-12','2026-04-24 08:28:58',10),(333,20,'this is SUBpost #16-13','2026-04-24 08:28:58',14),(334,5,'this is SUBpost #16-14','2026-04-24 08:28:58',10),(335,6,'this is SUBpost #16-15','2026-04-24 08:28:58',8),(336,9,'this is SUBpost #16-16','2026-04-24 08:28:58',3),(337,5,'this is SUBpost #16-17','2026-04-24 08:28:58',7),(338,3,'this is SUBpost #16-18','2026-04-24 08:28:58',6),(339,18,'this is SUBpost #16-19','2026-04-24 08:28:58',18),(340,19,'this is SUBpost #16-20','2026-04-24 08:28:58',6),(341,20,'this is SUBpost #17-1','2026-04-24 08:28:58',11),(342,19,'this is SUBpost #17-2','2026-04-24 08:28:58',3),(343,5,'this is SUBpost #17-3','2026-04-24 08:28:58',11),(344,7,'this is SUBpost #17-4','2026-04-24 08:28:58',5),(345,12,'this is SUBpost #17-5','2026-04-24 08:28:58',20),(346,14,'this is SUBpost #17-6','2026-04-24 08:28:58',6),(347,4,'this is SUBpost #17-7','2026-04-24 08:28:58',12),(348,11,'this is SUBpost #17-8','2026-04-24 08:28:58',15),(349,4,'this is SUBpost #17-9','2026-04-24 08:28:58',12),(350,7,'this is SUBpost #17-10','2026-04-24 08:28:58',9),(351,2,'this is SUBpost #17-11','2026-04-24 08:28:58',10),(352,9,'this is SUBpost #17-12','2026-04-24 08:28:58',5),(353,4,'this is SUBpost #17-13','2026-04-24 08:28:58',1),(354,17,'this is SUBpost #17-14','2026-04-24 08:28:58',15),(355,8,'this is SUBpost #17-15','2026-04-24 08:28:58',17),(356,14,'this is SUBpost #17-16','2026-04-24 08:28:58',20),(357,6,'this is SUBpost #17-17','2026-04-24 08:28:58',3),(358,19,'this is SUBpost #17-18','2026-04-24 08:28:58',9),(359,15,'this is SUBpost #17-19','2026-04-24 08:28:58',15),(360,15,'this is SUBpost #17-20','2026-04-24 08:28:58',6),(361,6,'this is SUBpost #18-1','2026-04-24 08:28:58',7),(362,15,'this is SUBpost #18-2','2026-04-24 08:28:58',9),(363,8,'this is SUBpost #18-3','2026-04-24 08:28:58',7),(364,3,'this is SUBpost #18-4','2026-04-24 08:28:58',17),(365,15,'this is SUBpost #18-5','2026-04-24 08:28:58',18),(366,5,'this is SUBpost #18-6','2026-04-24 08:28:58',12),(367,15,'this is SUBpost #18-7','2026-04-24 08:28:58',11),(368,18,'this is SUBpost #18-8','2026-04-24 08:28:58',5),(369,10,'this is SUBpost #18-9','2026-04-24 08:28:58',17),(370,7,'this is SUBpost #18-10','2026-04-24 08:28:58',9),(371,19,'this is SUBpost #18-11','2026-04-24 08:28:58',11),(372,20,'this is SUBpost #18-12','2026-04-24 08:28:58',20),(373,6,'this is SUBpost #18-13','2026-04-24 08:28:58',4),(374,14,'this is SUBpost #18-14','2026-04-24 08:28:58',12),(375,12,'this is SUBpost #18-15','2026-04-24 08:28:58',17),(376,3,'this is SUBpost #18-16','2026-04-24 08:28:58',4),(377,13,'this is SUBpost #18-17','2026-04-24 08:28:58',11),(378,4,'this is SUBpost #18-18','2026-04-24 08:28:58',1),(379,6,'this is SUBpost #18-19','2026-04-24 08:28:58',15),(380,18,'this is SUBpost #18-20','2026-04-24 08:28:58',5),(381,17,'this is SUBpost #19-1','2026-04-24 08:28:58',1),(382,19,'this is SUBpost #19-2','2026-04-24 08:28:58',3),(383,3,'this is SUBpost #19-3','2026-04-24 08:28:58',6),(384,20,'this is SUBpost #19-4','2026-04-24 08:28:58',18),(385,1,'this is SUBpost #19-5','2026-04-24 08:28:58',17),(386,19,'this is SUBpost #19-6','2026-04-24 08:28:58',20),(387,5,'this is SUBpost #19-7','2026-04-24 08:28:58',19),(388,1,'this is SUBpost #19-8','2026-04-24 08:28:58',10),(389,9,'this is SUBpost #19-9','2026-04-24 08:28:58',17),(390,13,'this is SUBpost #19-10','2026-04-24 08:28:58',4),(391,19,'this is SUBpost #19-11','2026-04-24 08:28:58',6),(392,1,'this is SUBpost #19-12','2026-04-24 08:28:58',14),(393,20,'this is SUBpost #19-13','2026-04-24 08:28:58',12),(394,5,'this is SUBpost #19-14','2026-04-24 08:28:58',20),(395,8,'this is SUBpost #19-15','2026-04-24 08:28:58',6),(396,7,'this is SUBpost #19-16','2026-04-24 08:28:58',14),(397,9,'this is SUBpost #19-17','2026-04-24 08:28:58',9),(398,9,'this is SUBpost #19-18','2026-04-24 08:28:58',6),(399,6,'this is SUBpost #19-19','2026-04-24 08:28:58',15),(400,13,'this is SUBpost #19-20','2026-04-24 08:28:58',3),(401,3,'this is SUBpost #20-1','2026-04-24 08:28:58',20),(402,6,'this is SUBpost #20-2','2026-04-24 08:28:58',19),(403,12,'this is SUBpost #20-3','2026-04-24 08:28:58',8),(404,8,'this is SUBpost #20-4','2026-04-24 08:28:58',20),(405,9,'this is SUBpost #20-5','2026-04-24 08:28:58',9),(406,5,'this is SUBpost #20-6','2026-04-24 08:28:58',20),(407,2,'this is SUBpost #20-7','2026-04-24 08:28:58',2),(408,4,'this is SUBpost #20-8','2026-04-24 08:28:58',15),(409,7,'this is SUBpost #20-9','2026-04-24 08:28:58',12),(410,14,'this is SUBpost #20-10','2026-04-24 08:28:58',12),(411,18,'this is SUBpost #20-11','2026-04-24 08:28:58',14),(412,17,'this is SUBpost #20-12','2026-04-24 08:28:58',13),(413,19,'this is SUBpost #20-13','2026-04-24 08:28:58',4),(414,13,'this is SUBpost #20-14','2026-04-24 08:28:58',8),(415,1,'this is SUBpost #20-15','2026-04-24 08:28:58',9),(416,4,'this is SUBpost #20-16','2026-04-24 08:28:58',9),(417,11,'this is SUBpost #20-17','2026-04-24 08:28:58',6),(418,12,'this is SUBpost #20-18','2026-04-24 08:28:58',12),(419,20,'this is SUBpost #20-19','2026-04-24 08:28:58',19),(420,19,'this is SUBpost #20-20','2026-04-24 08:28:58',6);
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `posts` with 0 row(s)
---
-
---
--- Table structure for table `sessions`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sessions` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `isssued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_hash` (`hash`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-SET autocommit=0;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `sessions` with 0 row(s)
---
-
---
--- Table structure for table `transactions`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `transactions` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `order_id` int unsigned NOT NULL,
-  `issued` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `amount` decimal(10,2) NOT NULL,
-  `is_paid` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `order_id` (`order_id`),
-  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `transactions`
---
-
-LOCK TABLES `transactions` WRITE;
-/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-SET autocommit=0;
-INSERT INTO `transactions` VALUES (1,1,1,'2026-04-15 04:16:24',123.12,1),(2,1,2,'2026-04-15 11:43:14',123.12,1),(3,1,3,'2026-04-20 02:25:32',123.12,1),(4,1,4,'2026-04-20 02:38:54',123.12,1),(5,1,5,'2026-04-20 02:38:54',123.12,1),(6,1,6,'2026-04-20 21:37:53',123.12,1),(7,1,7,'2026-04-20 21:38:18',123.12,1),(8,1,8,'2026-04-20 21:38:20',123.12,1),(9,1,9,'2026-04-20 21:38:27',123.12,1),(10,1,10,'2026-04-20 21:38:43',123.12,1),(11,1,11,'2026-04-20 21:40:09',123.12,1),(12,1,12,'2026-04-20 21:40:10',123.12,1),(13,1,13,'2026-04-20 21:40:10',123.12,1),(14,1,14,'2026-04-20 21:40:11',123.12,1),(15,1,15,'2026-04-20 21:40:11',123.12,1),(16,1,16,'2026-04-20 21:40:11',123.12,1),(17,1,17,'2026-04-20 21:40:12',123.12,1),(18,1,18,'2026-04-20 21:40:12',123.12,1),(19,1,19,'2026-04-20 21:42:31',123.12,1),(20,1,20,'2026-04-20 21:42:41',123.12,1),(21,1,21,'2026-04-20 21:42:53',123.12,1),(22,1,22,'2026-04-20 21:43:10',123.12,1),(23,1,23,'2026-04-20 21:44:39',123.12,1),(24,1,24,'2026-04-20 21:44:42',123.12,1),(25,1,25,'2026-04-20 21:44:48',123.12,1),(26,1,26,'2026-04-21 08:42:08',123.12,1);
-/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `transactions` with 26 row(s)
+-- Dumped table `posts` with 420 row(s)
 --
 
 --
@@ -253,7 +96,7 @@ CREATE TABLE `users` (
   `display` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,12 +106,46 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `users` VALUES (1,NULL,'coolguy1','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','Alex Smith'),(2,NULL,'coolguy2','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','Matua Haimay');
+INSERT INTO `users` VALUES (1,NULL,'coolguy1','0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e','Matua Haimay'),(2,NULL,'coolguy2','6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4',NULL),(3,NULL,'coolguy3','5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764',NULL),(4,NULL,'coolguy4','b97873a40f73abedd8d685a7cd5e5f85e4a9cfb83eac26886640a0813850122b',NULL),(5,NULL,'coolguy5','8b2c86ea9cf2ea4eb517fd1e06b74f399e7fec0fef92e3b482a6cf2e2b092023',NULL),(6,NULL,'coolguy6','598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5',NULL),(7,NULL,'coolguy7','5860836e8f13fc9837539a597d4086bfc0299e54ad92148d54538b5c3feefb7c',NULL),(8,NULL,'coolguy8','57f3ebab63f156fd8f776ba645a55d96360a15eeffc8b0e4afe4c05fa88219aa',NULL),(9,NULL,'coolguy9','9323dd6786ebcbf3ac87357cc78ba1abfda6cf5e55cd01097b90d4a286cac90e',NULL),(10,NULL,'coolguy10','aa4a9ea03fcac15b5fc63c949ac34e7b0fd17906716ac3b8e58c599cdc5a52f0',NULL),(11,NULL,'coolguy11','53d453b0c08b6b38ae91515dc88d25fbecdd1d6001f022419629df844f8ba433',NULL),(12,NULL,'coolguy12','b3d17ebbe4f2b75d27b6309cfaae1487b667301a73951e7d523a039cd2dfe110',NULL),(13,NULL,'coolguy13','48caafb68583936afd0d78a7bfd7046d2492fad94f3c485915f74bb60128620d',NULL),(14,NULL,'coolguy14','c6863e1db9b396ed31a36988639513a1c73a065fab83681f4b77adb648fac3d6',NULL),(15,NULL,'coolguy15','c63c2d34ebe84032ad47b87af194fedd17dacf8222b2ea7f4ebfee3dd6db2dfb',NULL),(16,NULL,'coolguy16','17a3379984b560dc311bb921b7a46b28aa5cb495667382f887a44a7fdbca7a7a',NULL),(17,NULL,'coolguy17','69bfb918de05145fba9dcee9688dfb23f6115845885e48fa39945eebb99d8527',NULL),(18,NULL,'coolguy18','d2042d75a67922194c045da2600e1c92ff6d87e8fb6e0208606665f2d1dfa892',NULL),(19,NULL,'coolguy19','5790ac3d0b8ae8afc72c2c6fb97654f2b73651c328de0a3b74854ade562dd17a',NULL),(20,NULL,'coolguy20','7535d8f2d8c35d958995610f971287288ab5e8c82a3c4fdc2b6fb5d757a5b9f8',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `users` with 2 row(s)
+-- Dumped table `users` with 20 row(s)
+--
+
+--
+-- Table structure for table `votes`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `votes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `is_upvote` tinyint(1) DEFAULT '1',
+  `user_id` int unsigned DEFAULT NULL,
+  `post_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `post_id` (`post_id`),
+  CONSTRAINT `votes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `votes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `votes`
+--
+
+LOCK TABLES `votes` WRITE;
+/*!40000 ALTER TABLE `votes` DISABLE KEYS */;
+SET autocommit=0;
+INSERT INTO `votes` VALUES (1,1,14,147),(2,0,2,115),(3,0,10,82),(4,1,12,347),(5,1,14,326),(6,1,11,129),(7,1,1,279),(8,0,11,156),(9,0,2,204),(10,0,3,248),(11,1,7,42),(12,1,4,162),(13,1,14,131),(14,0,13,79),(15,1,13,60),(16,0,1,347),(17,0,12,230),(18,1,12,284),(19,1,2,185),(20,0,8,102),(21,1,16,97),(22,0,6,271),(23,1,11,17),(24,0,1,190),(25,0,14,217),(26,0,16,355),(27,0,16,80),(28,0,4,405),(29,0,18,71),(30,0,20,256),(31,1,9,207),(32,1,7,7),(33,0,19,381),(34,0,17,354),(35,1,9,300),(36,1,17,289),(37,1,8,225),(38,1,18,95),(39,1,8,388),(40,0,6,405),(41,1,15,382),(42,0,4,122),(43,1,13,92),(44,1,14,334),(45,1,4,200),(46,0,4,329),(47,0,2,346),(48,0,3,394),(49,1,14,301),(50,0,4,319),(51,1,5,2),(52,0,14,241),(53,1,18,178),(54,1,19,168),(55,1,7,361),(56,1,13,402),(57,1,17,187),(58,1,2,390),(59,0,6,355),(60,1,14,276),(61,1,5,25),(62,1,13,103),(63,0,5,211),(64,1,13,377),(65,0,20,210),(66,1,3,303),(67,1,4,127),(68,0,19,194),(69,1,6,202),(70,0,1,285),(71,1,11,385),(72,1,13,41),(73,1,4,236),(74,1,19,293),(75,0,9,405),(76,1,17,197),(77,0,12,173),(78,1,1,265),(79,1,4,417),(80,1,13,227),(81,0,16,138),(82,0,6,36),(83,0,6,229),(84,0,4,399),(85,0,13,26),(86,1,18,26),(87,1,18,195),(88,1,11,103),(89,0,3,104),(90,0,17,176),(91,1,16,16),(92,0,18,384),(93,1,17,201),(94,1,7,225),(95,0,4,4),(96,1,19,388),(97,1,1,413),(98,1,19,21),(99,1,12,147),(100,0,19,374),(101,1,7,329),(102,0,1,89),(103,0,8,85),(104,0,7,109),(105,1,8,356),(106,1,14,172),(107,1,5,307),(108,0,15,85),(109,0,9,290),(110,1,20,269),(111,0,9,303),(112,1,18,85),(113,1,12,407),(114,1,7,376),(115,0,9,105),(116,1,4,269),(117,1,12,264),(118,1,16,151),(119,1,1,13),(120,0,7,309),(121,1,12,371),(122,1,10,233),(123,1,17,54),(124,0,8,44),(125,1,2,357),(126,1,19,49),(127,0,8,225),(128,1,14,11),(129,1,14,386),(130,1,12,89),(131,1,20,407),(132,0,7,369),(133,0,18,171),(134,1,5,275),(135,1,15,112),(136,1,20,296),(137,0,6,196),(138,1,13,285),(139,0,3,186),(140,1,8,401),(141,0,2,121),(142,0,4,47),(143,0,17,217),(144,0,1,128),(145,1,8,218),(146,1,7,402),(147,0,7,142),(148,1,9,59),(149,1,5,304),(150,1,10,293),(151,1,4,159),(152,1,15,142),(153,0,1,308),(154,1,15,294),(155,1,6,293),(156,1,12,274),(157,0,3,272),(158,0,14,104),(159,1,13,306),(160,0,10,343),(161,1,16,51),(162,1,20,357),(163,1,11,307),(164,0,6,127),(165,1,3,213),(166,1,19,334),(167,0,4,230),(168,0,11,117),(169,1,15,317),(170,0,5,266),(171,1,19,59),(172,1,15,124),(173,1,15,138),(174,1,17,4),(175,1,2,77),(176,0,18,175),(177,0,12,80),(178,1,1,175),(179,0,5,302),(180,1,3,86),(181,0,20,360),(182,1,18,359),(183,0,4,92),(184,1,8,242),(185,0,6,35),(186,0,11,45),(187,1,2,295),(188,0,3,211),(189,0,12,232),(190,1,1,366),(191,0,16,221),(192,0,9,312),(193,1,11,331),(194,1,12,315),(195,1,20,207),(196,1,19,186),(197,0,15,151),(198,0,11,252),(199,1,4,251),(200,0,13,343),(201,0,19,126),(202,1,14,413),(203,0,16,199),(204,0,9,244),(205,0,14,20),(206,0,3,193),(207,1,11,186),(208,1,10,286),(209,1,4,83),(210,1,15,62),(211,0,16,22),(212,1,15,397),(213,0,3,406),(214,1,9,152),(215,0,5,182),(216,0,10,361),(217,1,20,182),(218,1,14,348),(219,1,5,369),(220,1,20,360),(221,1,19,383),(222,1,16,401),(223,0,8,15),(224,0,19,103),(225,1,7,210),(226,1,18,12),(227,1,5,9),(228,1,10,81),(229,0,9,204),(230,0,18,299),(231,1,17,186),(232,1,9,30),(233,0,8,171),(234,1,20,50),(235,1,10,381),(236,0,15,16),(237,0,5,203),(238,0,14,127),(239,1,9,235),(240,0,12,205),(241,1,4,166),(242,1,7,64),(243,1,3,201),(244,1,7,113),(245,1,19,215),(246,0,20,162),(247,1,19,221),(248,1,8,164),(249,1,2,360),(250,0,16,287),(251,1,6,185),(252,0,7,99),(253,0,17,289),(254,1,5,284),(255,0,11,258),(256,1,15,273),(257,0,17,92),(258,1,3,299),(259,0,9,388),(260,1,1,402),(261,1,7,95),(262,0,16,322),(263,0,4,134),(264,1,5,258),(265,1,20,417),(266,1,15,94),(267,1,16,338),(268,1,6,98),(269,1,1,396),(270,0,2,177),(271,0,9,16),(272,0,16,28),(273,1,9,414),(274,0,16,177),(275,0,6,20),(276,1,1,218),(277,1,18,234),(278,0,19,333),(279,0,2,114),(280,1,3,65),(281,0,14,316),(282,0,4,283),(283,0,14,242),(284,0,16,166),(285,0,13,271),(286,0,14,42),(287,0,19,277),(288,1,12,57),(289,0,2,336),(290,1,8,274),(291,0,2,142),(292,1,3,175),(293,0,3,50),(294,0,8,323),(295,1,17,218),(296,0,7,323),(297,0,17,290),(298,0,8,134),(299,0,6,51),(300,1,5,384),(301,1,6,322),(302,1,20,149),(303,0,10,387),(304,0,16,378),(305,1,14,334),(306,1,3,205),(307,0,18,146),(308,0,3,352),(309,0,8,266),(310,1,5,137),(311,0,19,190),(312,1,8,242),(313,1,12,159),(314,0,19,413),(315,0,3,98),(316,1,6,304),(317,1,5,318),(318,1,2,206),(319,1,2,89),(320,1,17,77),(321,1,4,321),(322,0,17,381),(323,0,3,44),(324,1,14,316),(325,0,20,403),(326,1,18,164),(327,0,20,2),(328,0,10,140),(329,0,14,406),(330,0,20,20),(331,1,16,95),(332,1,6,171),(333,1,3,320),(334,0,7,195),(335,1,10,324),(336,0,15,123),(337,1,6,98),(338,0,12,227),(339,1,5,111),(340,0,3,77),(341,0,1,96),(342,0,2,219),(343,1,4,392),(344,0,7,29),(345,0,19,349),(346,0,17,21),(347,1,2,384),(348,0,11,185),(349,0,5,408),(350,0,8,75),(351,0,2,123),(352,0,10,337),(353,0,7,196),(354,0,3,176),(355,1,8,377),(356,0,14,288),(357,1,6,189),(358,0,2,197),(359,1,3,404),(360,0,18,132),(361,0,11,192),(362,1,5,141),(363,0,17,138),(364,1,4,320),(365,0,9,86),(366,1,9,69),(367,0,19,320),(368,0,18,252),(369,0,13,133),(370,0,18,323),(371,1,2,165),(372,0,5,176),(373,1,17,79),(374,0,4,377),(375,0,16,178),(376,0,9,179),(377,1,5,276),(378,1,7,60),(379,0,20,48),(380,0,1,332),(381,0,16,351),(382,1,5,154),(383,1,7,3),(384,0,7,135),(385,1,8,340),(386,0,8,378),(387,0,16,29),(388,1,5,245),(389,0,1,337),(390,1,7,254),(391,0,3,122),(392,0,20,283),(393,0,2,340),(394,1,12,408),(395,1,8,157),(396,0,11,340),(397,1,20,346),(398,0,6,151),(399,1,19,127),(400,1,6,347);
+/*!40000 ALTER TABLE `votes` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `votes` with 400 row(s)
 --
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -281,4 +158,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Tue, 21 Apr 2026 09:29:28 +0000
+-- Dump completed on: Fri, 24 Apr 2026 12:49:35 +0000

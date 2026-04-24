@@ -91,11 +91,15 @@ new pages or done through a js client api (so that the file can be a .html not a
 	
 	
 FEEDBACK:
+[2026/04/23] | sanson - does not like the fact that the sign out button is not a link like the other links on the page. [DONE]
+[2026/04/23] | sanson - suggested adding a password option. [DONE]
+[2026/04/24] | samanthaa - instead of showing TRUE or FALSE on the admins section on the user list, you should add some ticks and crosses instead [DONE]
+[2026/04/24] | samanthaa - instead of showing accending and decending on the table names you should put the actual icons of up and down arrows. [DONE]
+[2026/04/24] | jono - too many request headers sent to database about authentication, instead you should cache it locally and use that value, only updating it on sign_in.
+[2026/04/24] | samanthaa - instead of checking the authentication during sign in, you could instead check it during session validation that way the user only has to reload the page to load new admin permissions.
 
 
-
-
-BUG1: 
+BUGS:
 
 <br />
 <b>Fatal error</b>:  Uncaught mysqli_sql_exception: Prepared statement needs to be re-prepared in /var/www/projectspace/zkvwvwwu/AS91902/db/library.php:236

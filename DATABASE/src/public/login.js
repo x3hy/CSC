@@ -1,3 +1,10 @@
+// move along if a session already exists
+(async ()=>{
+	await validate_session();
+	if (_is_valid)
+		open_dashboard();
+})();
+
 const _form_submit = document.getElementById("login-form-submit");
 const _form_switch = document.getElementById("login-form-switch");
 const _form_header = document.getElementById("login-form-header");
@@ -69,18 +76,6 @@ _form_switch.addEventListener("click", (e) => {
 	_form.classList.toggle("form-sign-in");
 	_title.innerText = get_mode();
 });
-
-
-(async ()=>{
-	const server_online = await ping_server();
-	if (!server_online){
-		set_error("Failed to ping the server, your client is broken or the server is down")
-		return
-	}
-
-	if (await validate_session() == true)
-		open_dashboard();
-})();
 
 // If the urlparameter set_page is set to sign_up then
 // change the page over to the sign_up page..

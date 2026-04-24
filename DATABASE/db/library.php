@@ -17,6 +17,8 @@ function is_allowed_sql($sql)
 }
 
 
+
+
 // small helper function to close the db
 // semantically.
 function close_db_connection()
@@ -316,9 +318,6 @@ function get_properties_from_table($table, array $props) {
 
     return $data;
 }
-
-function get_users_list(){
-}
 	
 
 function validate_password($password)
@@ -391,8 +390,240 @@ function validate_display($display)
     return true;
 }
 
-// returns a users data on login.
-function user_exist(string $username)
+// returns true or false depending on if a post exists by id
+function post_exist(int $post_id){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT id
+		FROM posts
+		WHERE id = ?
+		LIMIT 1
+	");
+	if (!$stmp)
+		return false;
+	
+	$stmp->bind_param('i', $post_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	return true;
+}
+
+function get_post_children_count($post_id){
+	global $conn;
+
+	$stmt = $conn->prepare("
+		SELECT COUNT(*) as count
+		FROM posts
+		WHERE parent_id = ?
+	");
+
+	if (!$stmt)
+		return false;
+
+	$stmt->bind_param('i', $post_id);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+	$row = $result->fetch_assoc();
+
+	$stmt->close();
+
+	return (int)$row['count'];
+}
+
+function get_post_children($post_id){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT *
+		FROM posts
+		WHERE parent_id = ?
+	");
+	
+	if (!$stmp)
+		return false;
+	
+	$stmp->bind_param('i', $post_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	$rows = [];
+	while ($row = $result->fetch_assoc())
+		$rows[] = $row;
+	
+	$stmp->close();
+	return $rows;
+}
+
+function get_post($post_id){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT *
+		FROM posts
+		WHERE id = ?
+		LIMIT 1
+	");
+	
+	if (!$stmp)
+		return false;
+	
+	$stmp->bind_param('i', $post_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	$row = $result->fetch_assoc();
+	$stmp->close();
+	return $row;
+}
+
+function get_root_posts(){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT *
+		FROM posts
+		WHERE parent_id IS NULL
+	");
+	
+	if (!$stmp)
+		return false;
+	
+	$stmp->execute();
+	$result = $stmp->get_result();
+	
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	$rows = [];
+	while ($row = $result->fetch_assoc())
+		$rows[] = $row;
+	
+	$stmp->close();
+	return $rows;
+}
+
+// gets the upvotes on a post
+function get_post_score(int $post_id){
+    global $conn;
+
+    $stmt = $conn->prepare("
+        SELECT 
+            COALESCE(SUM(CASE 
+                WHEN is_upvote = 1 THEN 2
+                ELSE -1
+            END), 0) AS vote_score
+        FROM votes
+        WHERE post_id = ?
+    ");
+
+    $stmt->bind_param("i", $post_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    return (int)$row['vote_score'];
+}
+
+// returns the username and display name of a user
+// given their id.
+function get_username_by_id(int $user_id){
+	global $conn;
+	
+	$stmp = $conn->prepare("
+		SELECT username, display
+		FROM users
+		WHERE id = ?
+		LIMIT 1
+	");
+	
+	if (!$stmp)
+		return false;
+	
+	$stmp->bind_param("i", $user_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	
+	$user = $result->fetch_assoc();
+	$stmp->close();
+	
+	return [$user["username"], $user["display"]];
+}
+
+function get_user_list(){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT *
+		FROM users
+	");
+	
+	$stmp->execute();
+	$result = $stmp->get_result();
+	$output = [];
+	
+	while ($row = $result->fetch_assoc()){
+		$row["admin"] = is_user_admin_by_id($row["id"]);
+		$output[] = $row;
+	}
+	
+	return $output;
+}
+
+// returns a users id if they exist
+function user_exist(string $username, string $hashed_password)
+{
+    global $conn;
+
+    // Basic validation
+    if (empty($username) || empty($hashed_password)) {
+        return false;
+    }
+	
+    // Prepare and execute query
+    $stmt = $conn->prepare("
+        SELECT id
+        FROM users 
+        WHERE username = ? AND password = ?
+        LIMIT 1
+    ");
+
+    if (!$stmt) 
+        return false;
+
+    $stmt->bind_param("ss", $username, $hashed_password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        $stmt->close();
+        return false;
+    }
+
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    
+	return $user['id'];
+}
+
+
+// returns a users id if they exist
+function username_exist(string $username)
 {
     global $conn;
 
@@ -427,6 +658,7 @@ function user_exist(string $username)
 	return $user['id'];
 }
 
+
 function sign_up(string $username, string $hashed_password, $display)
 {
 	if (user_exist($username) != false)
@@ -446,39 +678,37 @@ function sign_up(string $username, string $hashed_password, $display)
 	return insert_into_table("users", $props);
 }
 
+function make_user_admin_by_id(int $user_id){
+	return insert_into_table("admins", ["user_id" => $user_id]);
+}
 
 // Sets a user as an admin
-function make_user_admin(string $usrename, string $hashed_password){
-	$user_id = user_exist($username);
+function make_user_admin(string $username, string $hashed_password){
+	$user_id = user_exist($username, $hashed_password);
 	if ($user_id == false)
 		// User does not exist.
 		return false;
 	
-	$props = ["user_id" => $user_id];
-	return insert_into_table("admins", $props);
+	return make_user_admin_by_id($user_id);
 }
 
-// fetches the users ID from the prior function, then if the id
-// is found in the admins table then it will return the admins id.
-// if not it will return false.
-function is_user_admin(string $username, string $hashed_password)
-{
-	global $conn;
-	$user_id = user_exist($username);
-	
-	if ($user_id == false)
-		return false;
-	
-	 // Prepare and execute query
+function is_user_admin_by_id(int $user_id){
+    global $conn;
+
+    if (!isset($user_id))
+        return false;
+
     $stmt = $conn->prepare("
-        SELECT id, user_id
+        SELECT id
         FROM admins
+        WHERE user_id = ?
         LIMIT 1
     ");
 
-    if (!$stmt) 
+    if (!$stmt)
         return false;
-	
+
+	$stmt->bind_param('i', $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -489,9 +719,32 @@ function is_user_admin(string $username, string $hashed_password)
 
     $admin = $result->fetch_assoc();
     $stmt->close();
-	
-	if ($user_id !== $admin['user_id'])
-		return false;
-    return $admin['id'];
+
+    return $admin['id']; // admin exists
 }
+
+// fetches the users ID from the prior function, then if the id
+// is found in the admins table then it will return the admins id.
+// if not it will return false.
+function is_user_admin(string $username, string $hashed_password)
+{
+	global $conn;
+	$user_id = user_exist($username, $hashed_password);
+	
+	if ($user_id == false)
+		return false;
+	
+	return is_user_admin_by_id($user_id);
+}
+
+/*
+// Boolian for if post exists or not
+function post_exist(int $post_id){
+
+}
+
+
+function create_post(string $description, int $user_id, int $parent_id){
+}
+*/
 ?>

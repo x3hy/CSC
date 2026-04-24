@@ -23,17 +23,18 @@ if (!defined('DB_LIBRARY')) {
 	// Value properties, made to be used in the actual sql table statements.
 	$ID_VALUE = "INT($id_int_size) UNSIGNED AUTO_INCREMENT PRIMARY KEY";
 	$NOTE_VALUE =                            "VARCHAR($note_char_size)";
-	$FOREIGN_ID_VALUE =           "INT($id_int_size) UNSIGNED NOT NULL";
+	$FOREIGN_ID_VALUE =       "INT($id_int_size) UNSIGNED DEFAULT NULL";
 	$TIMESTAMP_VALUE =            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
 	$CURRENCY_VALUE =                                   "DECIMAL(10,2)";
 	$DESCRIPTION_VALUE =              "VARCHAR($description_char_size)";
 	$USERNAME_VALUE =    "VARCHAR($username_char_size) NOT NULL UNIQUE";
 	$DISPLAY_VALUE =                      "VARCHAR($display_char_size)";
 	$PASSWORD_VALUE =           "VARCHAR($password_char_size) NOT NULL";
+	$BOOL_VALUE =                                "BOOLEAN DEFAULT TRUE";
 	$reset_file = "reset.php";
 	
 	// Confirm that the database has been initialised.
-	$tables = ["users", "posts", "admins", "comments"];
+	$tables = ["users", "posts", "admins", "votes"];
 	if (!exist_tables($tables))
 	  {
 		echo "Some tables didn't exist, to fix this the database will be reset.<br><br>";

@@ -8,7 +8,6 @@ require __DIR__ . "/include.php";
 echo "<b>Deleting tables:</b><br>";
 delete_tables($tables);
 
-
 echo "<br><b>Creating tables:</b><br>";
 
 // Create the users table
@@ -28,16 +27,19 @@ create_table(
 	user_id $FOREIGN_ID_VALUE,
 	description $DESCRIPTION_VALUE,
 	time_issued $TIMESTAMP_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-	
+	parent_id $FOREIGN_ID_VALUE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+	FOREIGN KEY (parent_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
+// Votes for a given post
 create_table(
-"comments","
+"votes", "
 	id $ID_VALUE,
+	is_upvote $BOOL_VALUE,
+	user_id $FOREIGN_ID_VALUE,
 	post_id $FOREIGN_ID_VALUE,
-	content $DESCRIPTION_VALUE,
-	time_issued $TIMESTAMP_VALUE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
@@ -46,64 +48,72 @@ create_table(
 "admins", "
 	id $ID_VALUE,
 	user_id $FOREIGN_ID_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE NO ACTION
 ");
-
 
 echo "<br><b>Inserting Data:</b><br>";
 
-// Create a new customer user
-$user_id = 
+$data_amount = 20;
+
+// Create some users
+for ($i = 1; $i <= $data_amount; $i++) {
 	insert_into_table("users", [
-		"username" => "coolguy1",
-		"display" => "Alex Smith",
-		"password" => generate_password("test"),
-	]
-);
+		"username" => "coolguy$i",
+		"password" => generate_password("password$i")
+	]);
+}
 
-// Create a new order
-$order_id = 
-	insert_into_table("orders", [
-		"note" => "test123",
-		"description" => "test1234",
-		"is_paid" => false
-	]
-);
+// Create some posts
+for ($i = 1; $i <= $data_amount; $i++){
+	insert_into_table("posts", [
+		"user_id" => mt_rand(1, $data_amount),
+		"description" => "this is post #$i"
+	]);
+}
 
-// Give the order a transaction
-insert_into_table("transactions", [
-	"user_id" => $user_id,
-	"order_id" => $order_id,
-	"amount" => 123.12,
-	"is_paid" => true
-]);
+// Create subposts on each post:
+for ($i = 1; $i <= $data_amount; $i++){
+	for ($j = 1; $j <= $data_amount; $j++){
+		insert_into_table("posts", [
+			"user_id" => mt_rand(1, $data_amount),
+			"description" => "this is SUBpost #$i-$j",
+			"parent_id" => mt_rand(1, $data_amount),
+		]);
+	}
+}
 
-// Create a new user
-$user_id = 
-	insert_into_table("users", [
-		"username" => "coolguy2",
-		"password" => generate_password("password123")
-	]
-);
+$post_count = $data_amount + ($data_amount * $data_amount);
+echo "created <i>$post_count</i> posts<br>";
 
-// Change a users properties:
-set_property_by_id("users", $user_id, [
-	"display" => "\"Matua Haimay\""
-]);
+// upvote some posts
+for ($i = 1; $i <= $data_amount*$data_amount; $i++){
+	insert_into_table("votes", [
+		"user_id" => mt_rand(1, $data_amount),
+		"post_id" => mt_rand(1, $post_count),
+		"is_upvote" => random_int(0, 1) ? true : false
+	]);
+}
 
 // make user[1] an admin:
 insert_into_table("admins", [
-	"user_id" => $user_id
+	"user_id" => 1
 ]);
 
+// Change the admins display name
+set_property_by_id("users", 1, [
+	"display" => "\"Matua Haimay\""
+]);
 
 echo "<br><b>Checking permissions:<br>User data:</b>";
-# fetch all of the users passwords and usernames:
+
+// fetch all of the users passwords and usernames:
 $user_data = get_properties_from_table("users", ["password", "username", "id"]);
 
+/*
 echo "<pre>";
 var_dump($user_data);
 echo "</pre>";
+*/
 
 echo "Is user[0] an admin?<br>";
 var_dump(is_user_admin($user_data[0]["username"], $user_data[0]["password"]));
