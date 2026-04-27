@@ -70,7 +70,8 @@ ${post.message.description}
 
 // Analyse session and load feed:
 (async () => {
-	await validate_session();
+	await validate_session_permanence(()=>{});
+	return;
 		
 	// If post_id is set in the URLSearchParams then
 	// load it as the root feed ID. This allows for

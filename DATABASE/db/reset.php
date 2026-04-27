@@ -72,13 +72,15 @@ for ($i = 1; $i <= $data_amount; $i++){
 }
 
 // Create subposts on each post:
+$post_count = $data_amount;
 for ($i = 1; $i <= $data_amount; $i++){
 	for ($j = 1; $j <= $data_amount; $j++){
 		insert_into_table("posts", [
 			"user_id" => mt_rand(1, $data_amount),
 			"description" => "this is SUBpost #$i-$j",
-			"parent_id" => mt_rand(1, $data_amount),
+			"parent_id" => mt_rand(1, $post_count),
 		]);
+		$post_count++;
 	}
 }
 
@@ -86,7 +88,7 @@ $post_count = $data_amount + ($data_amount * $data_amount);
 echo "created <i>$post_count</i> posts<br>";
 
 // upvote some posts
-for ($i = 1; $i <= $data_amount*$data_amount; $i++){
+for ($i = 1; $i <= $data_amount*$data_amount*$data_amount; $i++){
 	insert_into_table("votes", [
 		"user_id" => mt_rand(1, $data_amount),
 		"post_id" => mt_rand(1, $post_count),

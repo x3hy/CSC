@@ -125,3 +125,10 @@ the profile page should take a url parameter that lets you specifiy a user to vi
 if no username is provided it will use the SESSION data.
 
 add likes value to posts, perhaps this needs to be another table, this could mean i could display a "likes" section that only the user can read.
+
+
+get all the users liked posts:
+SELECT t2.*
+FROM table1 t1
+JOIN table2 t2 ON t1.foreign_id = t2.id
+WHERE t1.user_id = ?

@@ -195,7 +195,8 @@ async function validate_session(){
 }
 
 // if a user is not signed in then they will be
-// sent to the sign-in page.
+// sent to the sign-in page. callback is run if user
+// is not signed in.
 async function validate_session_permanence(callback){
 	function _callback(){
 		sign_out();
@@ -209,8 +210,8 @@ async function validate_session_permanence(callback){
 	// auth call then we'd also have to figure out if the
 	// user was an admin, this function kills two auths with
 	// one request.
-	if (! await update_admin_status())
-		if (! await update_session())
+	if ((await update_admin_status() == false)
+		if (await update_session() == false)
 			if (callback == undefined)
 				_callback();
 			else callback();
