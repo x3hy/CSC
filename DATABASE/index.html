@@ -6,30 +6,32 @@
 	<title id="title">Home</title>
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
-	<script>
-		validate_session()
+	<script defer>
+		validate_session_permanence(()=>{})
 	</script>
 </head>
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Dashboard</h2>
-			<ul>
-				<li><a href="index.html">Home</a></li>
+			<h1><span class="logo"></span>/Home</h1>
+			<span>
+				<a href="index.html"><mark>Home</mark></a>
 				<span class="auth">
-					<li><a href="create.html">Create</a></li>
-					<li><a href="user.html">Profile</a></li>
+					<a href="dashboard.html">Dashboard</a>
+					<a href="create.html">Create</a>
+					<a href="user.html">Profile</a>
 				</span>
-				<li><a href="feed.html">Feed</a></li>
+				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<li onclick="sign_out();open_home()"><a>Sign out</a></li>
+					<a onclick="sign_out();open_home()">Sign out</a>
 				</span>
 				<span class="non-auth">
-					<li><a href="sign_in.html">Sign In</a></li>
-					<li><a href="sign_in.html?sign=up">Sign Up</a></li>
+					<a href="sign_in.html">Sign In</a>
+					<a href="sign_in.html?sign=up">Sign Up</a>
 				</span>
-			</ul>
+			</span>
 		</nav>
+		<hr>
 		<h2>Welcome to <span class="logo accent"></span>!</h2>
 		<section>
 			<p>
@@ -38,7 +40,6 @@
 				creation page, or alternatively press the "Sign In" button if you already have an account.</span><span class="auth">You are already signed
 				into an account (<span class="display accent"></span>), Click the "Open Dashboard" button in the top left to start creating!</span>
 			</p>
-			<hr>
 		</section>
 	</header>
 </body>

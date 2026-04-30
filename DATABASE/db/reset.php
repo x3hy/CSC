@@ -28,7 +28,6 @@ create_table(
 	description $DESCRIPTION_VALUE,
 	time_issued $TIMESTAMP_VALUE,
 	parent_id $FOREIGN_ID_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	FOREIGN KEY (parent_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
@@ -39,7 +38,6 @@ create_table(
 	is_upvote $BOOL_VALUE,
 	user_id $FOREIGN_ID_VALUE,
 	post_id $FOREIGN_ID_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
@@ -47,8 +45,7 @@ create_table(
 create_table(
 "admins", "
 	id $ID_VALUE,
-	user_id $FOREIGN_ID_VALUE,
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE NO ACTION
+	user_id $FOREIGN_ID_VALUE
 ");
 
 echo "<br><b>Inserting Data:</b><br>";

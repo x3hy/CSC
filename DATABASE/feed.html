@@ -11,34 +11,35 @@
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Feed</h2>
-			<ul>
-				<li><a href="index.html">Home</a></li>
+			<h1><span class="logo"></span>/Feed</h1>
+			<span>
+				<a href="index.html">Home</a>
 				<span class="auth">
-					<li><a href="create.html">Create</a></li>
-					<li><a href="user.html">Profile</a></li>
-					<li><a href="dashboard.html">Dashboard</a></li>
+					<a href="dashboard.html">Dashboard</a>
+					<a href="create.html">Create</a>
+					<a href="user.html">Profile</a>
 				</span>
-				<li><a href="feed.html">Feed</a></li>
+				<a href="feed.html"><mark>Feed</mark></a>
 				<span class="auth">
-					<li onclick="sign_out();location.reload()"><a>Sign out</a></li>
+					<a onclick="sign_out();open_home()">Sign out</a>
 				</span>
 				<span class="non-auth">
-					<li><a href="sign_in.html">Sign In</a></li>
-					<li><a href="sign_in.html?sign=up">Sign Up</a></li>
+					<a href="sign_in.html">Sign In</a>
+					<a href="sign_in.html?sign=up">Sign Up</a>
 				</span>
-			</ul>
+			</span>
 		</nav>
 		<section>
+			<p id="post-path"></p>
 			<p id="body">Welcome to the feed! This page shows all posts on the <span class="logo"></span> platform!</p>
 			<table id="feed" class="left">
 				<thead>
 					<th>#</th>
+					<th># Comments:</th>
 					<th>Score</th>
 					<th>Poster</th>
 					<th>Description</th>
 					<th>Upload Date:</th>
-					<th># Of Comments:</th>
 					<th>Actions</th>
 				</thead>
 				<tbody>

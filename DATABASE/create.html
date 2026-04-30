@@ -3,19 +3,22 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title id="title">Status:</title>
+	<title id="title">Home</title>
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
+	<script defer>
+		validate_session_permanence()
+	</script>
 </head>
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Dashboard</h2>
+			<h1><span class="logo"></span>/Create</h1>
 			<span>
 				<a href="index.html">Home</a>
 				<span class="auth">
-					<a href="dashboard">Dashboard</a>
-					<a href="create.html">Create</a>
+					<a href="dashboard.html">Dashboard</a>
+					<a href="create.html"><mark>Create</mark></a>
 					<a href="user.html">Profile</a>
 				</span>
 				<a href="feed.html">Feed</a>
@@ -28,24 +31,6 @@
 				</span>
 			</span>
 		</nav>
-		<code>
-			<h1 id="code"></h1>
-		</code>
-		<h4 id="reason"></h4>
 	</header>
-	<script>
-		const _reason = document.getElementById("reason");
-		const _code = document.getElementById("code");
-		const params = new URLSearchParams(String(location.href).split("?")[1]);
-		for (let pair of params.entries()){
-			console.log(pair);
-			if (pair[0] == "q")
-				_reason.innerText = pair[1];
-			if (pair[0] == "c")
-				_code.innerText = pair[1];
-				
-		}
-
-	</script>
 </body>
 </html>

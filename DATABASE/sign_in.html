@@ -12,11 +12,23 @@
 	<!-- Login form -->
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Login</h2>
-			<ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="feed.html">Feed</a></li>
-			</ul>
+			<h2><span class="logo"></span>/Dashboard</h2>
+			<span>
+				<a href="index.html">Home</a>
+				<span class="auth">
+					<a href="dashboard">Dashboard</a>
+					<a href="create.html">Create</a>
+					<a href="user.html">Profile</a>
+				</span>
+				<a href="feed.html">Feed</a>
+				<span class="auth">
+					<a onclick="sign_out();open_home()">Sign out</a>
+				</span>
+				<span class="non-auth">
+					<a href="sign_in.html"><mark>Sign In</mark></a>
+					<a href="sign_in.html?sign=up"><mark>Sign Up</mark></a>
+				</span>
+			</span>
 		</nav>
 		<section>
 			<form id="login-form" class="form-sign-in">
@@ -25,23 +37,37 @@
 				</center>
 
 				<!-- *Name options -->
-				<label>
-					Username: <input type="text" placeholder="Username" name="username" autocomplete="username">
-				</label>
+				<table>
+					<tbody>
+						<tr>
+							<td>Username:</td>
+							<td>
+								<input type="text" placeholder="Username" name="username" autocomplete="username">
+							</td>
+						</tr>
+						<tr class="sign-up">
+							<td>Display Name:</td>
+							<td>
+								<input type="text" placeholder="Display Name" name="display">
+							</td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td>
+								<input type="password" placeholder="Password" name="password" autocomplete="password">
+							</td>
+						</tr>
+						<tr class="sign-up">
+							<td>Confirm Password:</td>
+							<td>
+								 <input type="password" placeholder="Confirm Password" name="passwordconfirm">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<i id="login-form-errors"></i>
+				<br>
 				
-				<label class="sign-up">
-					Display Name: <input type="text" placeholder="Display Name" name="display">
-				</label>
-
-				<!-- Password options -->
-				<label>
-					Password: <input type="password" placeholder="Password" name="password" autocomplete="password">
-				</label>
-				
-				<label class="sign-up">
-					Confirm Password: <input type="password" placeholder="Confirm Password" name="passwordconfirm">
-				</label>
-
 				<!-- Action buttons -->
 				<button id="login-form-submit">
 					<b>Submit</b>
@@ -49,7 +75,6 @@
 				<b>
 					<button id="login-form-switch"></button>
 				</b>
-				<i id="login-form-errors"></i>
 			</form>
 		</section>
 	</header>

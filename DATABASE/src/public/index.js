@@ -5,7 +5,6 @@ const __DIR__ = (function() {
     return src ? src.substring(0, src.lastIndexOf('/')) : '';
 })();
 
-// Generate a password (sha-256)
 async function generate_password(raw) {
     const data = new TextEncoder().encode(raw);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -42,6 +41,36 @@ let _resp_count = 0; async function POST(content, callback = console.error) {
 	// generated token.
 	console.log(`#${_resp_id} [GET] ${JSON.stringify(await out)} from server.`);
 	return await out;
+}
+
+// if a user is not signed in then they will be
+// sent to the sign-in page. callback is run if user
+// is not signed in.
+async function validate_session_permanence(callback){
+	function _callback(){
+		sign_out();
+		open_error("You are not signed in.", 202);
+	}
+	
+	// check ring 2 access first, if this passes then
+	// we know the user must have valid id to pass ring 1.
+	// 
+	// if we simply checked the validity using the regular
+	// auth call then we'd also have to figure out if the
+	// user was an admin, this function kills two auths with
+	// one request.
+	await update_admin_status();
+	if (!_is_admin){ // does user have ring-2?
+		await update_session();
+		if (!_is_valid) // does user have ring-1?
+			if (callback == undefined)
+				_callback(); // logout
+			else callback();
+	} else _is_valid = true; // sudoku
+	
+	// Hooks section:
+	init_auth_elements();
+	return _is_loaded = true; // for other functions
 }
 
 // Cred key names
@@ -116,12 +145,8 @@ function open_home(){
 	location.href = __DIR__ + "/../../";
 }
 
-function open_post(id){
-	let url = __DIR__ + "/../../feed.html";
-	if (id != undefined)
-		url+="?post_id=" + String(id);
-	
-	location.href = url;
+function open_post(extra){
+	location.href = __DIR__ + "/../../feed.html" + extra != undefined ? extra : "";
 }
 
 function open_error(reason, code){
@@ -182,6 +207,7 @@ async function get_admin_status(id){
 //
 async function update_admin_status(){
 	_is_admin = await get_admin_status();
+	return await _is_admin;
 }
 
 async function toggle_admin_status(id) {
@@ -194,31 +220,7 @@ async function validate_session(){
 	return await validate_session_permanence(()=>{});
 }
 
-// if a user is not signed in then they will be
-// sent to the sign-in page. callback is run if user
-// is not signed in.
-async function validate_session_permanence(callback){
-	function _callback(){
-		sign_out();
-		open_error("You are not signed in.", 202);
-	}
-	
-	// check ring 2 access first, if this passes then
-	// we know the user must have valid id to pass ring 1.
-	// 
-	// if we simply checked the validity using the regular
-	// auth call then we'd also have to figure out if the
-	// user was an admin, this function kills two auths with
-	// one request.
-	if ((await update_admin_status() == false)
-		if (await update_session() == false)
-			if (callback == undefined)
-				_callback();
-			else callback();
-	else _is_valid = true;
-	init_auth_elements();
-	_is_loaded = true;
-}
+
 
 // Signs the user out by clearing thier username and
 // password from localStorage.
@@ -309,4 +311,26 @@ function make_sortable_table(tableId) {
     th.style.cursor = "pointer";
     th.addEventListener("click", () => sortTable(index));
   });
+}
+
+
+// Validates a username using server api
+async function validate_username(username){
+	 return await POST(
+		{"call":"username", "content" : username}
+	);
+}
+
+// Validates a display name using the server api
+async function validate_display(display){
+	return await POST(
+		{"call":"display", "content" : display}
+	);
+}
+
+// Validates a password using the server api
+async function validate_password(password){
+	return await POST(
+		{"call":"password", "content" : password}
+	);
 }

@@ -661,7 +661,7 @@ function username_exist(string $username)
 
 function sign_up(string $username, string $hashed_password, $display)
 {
-	if (user_exist($username) != false)
+	if (user_exist($username, $hashed_password) != false)
 		// User already exists
 		return false;
 	

@@ -93,11 +93,11 @@ function client_delete_user($user_id){
 }
 
 // deletes the current user
-function client_delete_self(string $username){
-	$ret = user_exist($username);
+function client_delete_self(string $username, string $hashed_password){
+	$ret = user_exist($username, $hashed_password);
 	if ($ret === false)
 		return [1, "User does not exist/Error"];
-
+	
 	return client_delete_user($ret);
 }
 
@@ -230,7 +230,7 @@ function ring_1($data)
 	return match ($data["call"])
 	{
 		"auth_ping" => client_ping(),
-		"delete_self" => client_delete_self($data["auth"]["username"]),
+		"delete_self" => client_delete_self($data["auth"]["username"], $data["auth"]["password"]),
 		default => null
 	};
 }

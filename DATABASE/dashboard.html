@@ -4,7 +4,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title id="title">Dashboard</title>
-	<link rel=stylesheet href="src/mvp.css">
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
 	<script src="src/public/dashboard.js" defer></script>
@@ -12,22 +11,23 @@
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Dashboard</h2>
-			<ul>
-				<li><a href="index.html">Home</a></li>
+			<h1><span class="logo"></span>/Dashboard</h1>
+			<span>
+				<a href="index.html">Home</a>
 				<span class="auth">
-					<li><a href="create.html">Create</a></li>
-					<li><a href="user.html">Profile</a></li>
+					<a href="dashboard.html"><mark>Dashboard</mark></a>
+					<a href="create.html">Create</a>
+					<a href="user.html">Profile</a>
 				</span>
-				<li><a href="feed.html">Feed</a></li>
+				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<li onclick="sign_out();open_home()"><a>Sign out</a></li>
+					<a onclick="sign_out();open_home()">Sign out</a>
 				</span>
 				<span class="non-auth">
-					<li><a href="sign_in.html">Sign In</a></li>
-					<li><a href="sign_in.html?sign=up">Sign Up</a></li>
+					<a href="sign_in.html">Sign In</a>
+					<a href="sign_in.html?sign=up">Sign Up</a>
 				</span>
-			</ul>
+			</span>
 		</nav>
 		<h1>Welcome to the Dashboard, <b class="accent"><span class="display">Username</span></b></h1>
 		<p>
@@ -47,29 +47,42 @@
 					When you're finished press the "Submit Changes" button.
 				</p>
 				<h2><span class="display">Username</span>'s User Settings:</h2>
-				<label>
-					Username: <input placeholder="oldusername" id="edit-form-username" name="username">
-				</label>
-				<label>
-					Display name: <input placeholder="display name" id="edit-form-display" name="display">
-				</label>
-				<label>
-					Change Password: <input placeholder="new password" id="edit-form-password" name="password">
-				</label>
-				<label>
-					Confirm Password: <input placeholder="new password" id="edit-form-password-confirm" name="confirm">
-				</label>
+				<table>
+					<tbody>
+						<tr>
+							<td>Username:</td>
+							<td>
+								<input placeholder="oldusername" id="edit-form-username" name="username">
+							</td>
+						</tr>
+						<tr>
+							<td>Display Name:</td>
+							<td>
+								<input placeholder="display name" id="edit-form-display" name="display">
+							</td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td>
+								<input placeholder="new password" id="edit-form-password" name="password">
+							</td>
+						</tr>
+						<tr>
+							<td>Confirm Password:</td>
+							<td>
+								<input placeholder="new password" id="edit-form-password-confirm" name="confirm">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<i id="edit-form-error"></i>
+				<br>
 				<button id="edit-form-submit">Submit Changes</button>
 				<i>
 					<button onclick="delete_user()">Permanently Delete Account</button>
 					<button disabled>Delete All Posts</button>
 				</i>
 			</form>
-		</section>
-		<section>
-			<p>
-				
-			</p>
 		</section>
 		<hr>
 		<div class="admin">
