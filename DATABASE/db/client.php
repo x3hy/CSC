@@ -34,7 +34,7 @@ function client_exit($status, $message){
 }
 
 // gets the comments (and their scores and user values)
-function client_get_posts($parent){
+function client_get_posts($parent, string $username){
 	global $conn;
 	$posts = false;
 	if ($parent == null)
@@ -46,16 +46,75 @@ function client_get_posts($parent){
 	
     foreach ($posts as $index => $post) {
         $posts[$index]["score"] = get_post_score($post["id"]);
+		
+		// Get the poster information
 		$user = get_username_by_id($post["user_id"]);
 		$posts[$index]["username"] = $user[0];
 		$posts[$index]["display"] = $user[1];
 		$posts[$index]["comment_count"] = get_post_children_count($post["id"]);
+		
+		// Get the users vote information
+		$user_id = username_exist($username);
+		if ($viewed_user !== false){
+			$vote_info = get_upvote_by_user_id($user_id, $post["id"]);
+			if ($post["user_id"] == $user_id)
+				$posts[$index]["owned_by_user"] = true;
+			else $posts[$index]["owned_by_user"] = false;
+			
+			if ($vote_info !== false && $vote_info !== null){
+				$posts[$index]["user_vote"]["is_upvote"] = $vote_info;
+				$posts[$index]["user_vote"]["is_downvote"] = !$vote_info;
+			} else 
+				$posts[$index]["user_vote"]["is_upvote"] = 
+					$posts[$index]["user_vote"]["is_downvote"] = false;
+			$posts[$index]["post_info"] = $vote_info;
+		}
     }
 
     return [0, $posts];
 }
 
-function client_get_post(int $post_id){
+function client_delete_post(string $username, $post_id){
+	$user_id = username_exist($username);
+	$ret = delete_post($user_id, $post_id);
+	if ($ret == false)
+		return [1, "Failed to delete post.."];
+	return [0, "Post deleted"];
+}
+
+function client_delete_post_admin($post_id){
+	if(delete_row_by_id("posts", $post_id))
+		return [0, "Post deleted"];
+	return [1, "Failed to delete post.."];
+}
+
+function client_create_post($username, $body, $parent_id){
+	$user_id = username_exist($username);
+	$props = [
+		"user_id" => $user_id,
+		"description" => $body
+	];
+	
+	if (isset($parent_id))
+		$props["parent_id"] = $parent_id;
+	
+	if(insert_into_table("posts", $props) === false)
+		return [1, "Failed to post, post"];
+	return [0, "Post posted!"];
+}
+
+// Sets a new username for a user
+function client_change_username(string $old_username, string $password, string $new_username){
+	if (username_exist($new_username) !== false)
+		return [1, "Username taken."];
+	
+	$user_id = user_exist($old_username, $password);
+	if (set_property_by_id("users", $user_id, ["username" => $new_username]))
+		return [0, "Username Updated"];
+	return [1, "Failed to set username"];
+}
+
+function client_get_post($post_id){
 	if (!post_exist($post_id))
 		return [1, "Post does not exist"];
 	
@@ -71,7 +130,30 @@ function client_get_post(int $post_id){
 	
 	return [0, $post];
 }
-	
+
+function client_upvote_post(int $post_id, string $username){
+	$user_id = username_exist($username);
+	$ret = upvote_post($post_id, $user_id);
+	$code = $ret == false ? 1 : 0;
+	$msg = $ret == false ? "Failed to upvote post" : "Success";
+	return [$code, $msg];
+}
+
+function client_downvote_post(int $post_id, string $username){
+	$user_id = username_exist($username);
+	$ret = downvote_post($post_id, $user_id);
+	$code = $ret == false ? 1 : 0;
+	$msg = $ret == false ? "Failed to downvote post" : "Success";
+	return [$code, $msg];
+}
+function client_remove_vote(int $post_id, string $username){
+	$user_id = username_exist($username);
+	$ret = remove_vote($post_id, $user_id);
+	$code = $ret == false ? 1 : 0;
+	$msg = $ret == false ? "Failed to remove post" : "Success";
+	return [$code, $msg];
+}
+
 
 // Very verbose validate_username function
 function client_validate_username(string $username)
@@ -215,7 +297,7 @@ function ring_0($data)
 		"is_admin" => client_is_admin($data["auth"]["username"], $data["auth"]["password"]),
 		"get_display" => client_get_display($data["content"]),
 		"is_admin_id" => client_is_admin_by_id($data["content"]),
-		"get_posts" => client_get_posts($data["content"]),
+		"get_posts" => client_get_posts($data["content"], $data["auth"]["username"]),
 		"get_post" => client_get_post($data["content"]),
 				 
 		// ping!  (server function)
@@ -231,6 +313,13 @@ function ring_1($data)
 	{
 		"auth_ping" => client_ping(),
 		"delete_self" => client_delete_self($data["auth"]["username"], $data["auth"]["password"]),
+		"upvote_post" => client_upvote_post($data["content"], $data["auth"]["username"]),
+		"downvote_post" => client_downvote_post($data["content"], $data["auth"]["username"]),
+		"remove_vote" => client_remove_vote($data["content"], $data["auth"]["username"]),
+		"change_username" => change_username($data["auth"]["username"], $data["auth"]["username"], $data["content"]),
+		"delete_post" => client_delete_post($data["auth"]["username"], $data["content"]),
+		"create_post" => client_create_post($data["auth"]["username"], $data["content"]["content"], $data["content"]["parent_id"]), // big boi
+
 		default => null
 	};
 }
@@ -244,6 +333,7 @@ function ring_2($data)
 		"list_users" => client_get_users_list(),
 		"delete_user" => client_delete_user($data["content"]),
 		"toggle_admin" => client_toggle_admin($data["content"]),
+		"delete_post_admin" => client_delete_post_admin($data["content"]),
 
 		default => null
 	};

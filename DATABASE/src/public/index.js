@@ -5,6 +5,15 @@ const __DIR__ = (function() {
     return src ? src.substring(0, src.lastIndexOf('/')) : '';
 })();
 
+function resolve_name(row){
+	return row.display ? row.display : row.username ? row.username : "Deleted User";
+}
+
+function is_deleted_user(row){
+	return (row.display == undefined && row.username == undefined);
+}
+
+
 async function generate_password(raw) {
     const data = new TextEncoder().encode(raw);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -145,15 +154,32 @@ function open_home(){
 	location.href = __DIR__ + "/../../";
 }
 
-function open_post(extra){
-	location.href = __DIR__ + "/../../feed.html" + extra != undefined ? extra : "";
+function open_feed(extra){
+	let href = __DIR__ + "/../../feed.html";
+	if (extra != undefined)
+		href +=  extra;
+	location.href = href; 
 }
 
-function open_error(reason, code){
-	let path = __DIR__ + "/../../error.html";
+function open_create(extra){
+	let href = __DIR__ + "/../../create.html";
+	if (extra != undefined)
+		href += extra;
+	location.href = href;
+}
+
+function open_profile(extra){
+	let href = __DIR__ + "/../../user.html";
+	if (extra != undefined)
+		href += extra;
+	location.href = href;
+}
+
+function open_error(reason, code = 200){
+	let href = __DIR__ + "/../../error.html";
 	if (reason != undefined)
-		path+=`?q=${reason}&c=${code}`;
-	location.href = path;
+		href += `?q=${reason}&c=${code}`;
+	location.href = href;
 }
 
 // Signs in a user
@@ -219,8 +245,6 @@ async function toggle_admin_status(id) {
 async function validate_session(){
 	return await validate_session_permanence(()=>{});
 }
-
-
 
 // Signs the user out by clearing thier username and
 // password from localStorage.
@@ -334,3 +358,34 @@ async function validate_password(password){
 		{"call":"password", "content" : password}
 	);
 }
+
+function time_since (date)
+		{
+			const fmt = (time, ext) =>
+				{return `${time} ${ext}${(time >= 1) ? "s" : ""}`}
+		
+			const old_date = new Date(date);
+			let seconds = Math.floor((new Date() - old_date) / 1000)
+			
+			var interval = seconds / 31536000;
+			if (interval > 1)
+				return fmt(Math.floor(interval), "year");
+			
+			interval = seconds / 2592000;
+			if (interval > 1)
+				return fmt(Math.floor(interval),"month");
+			
+			interval = seconds / 86400;
+			if (interval > 1)
+				return fmt(Math.floor(interval),"day");
+			
+			interval = seconds / 3600;
+			if (interval > 1)
+				return fmt(Math.floor(interval), "hour");
+			
+			interval = seconds / 60;
+			if (interval > 1)
+				return fmt(Math.floor(interval), "minute");
+			
+			return fmt(Math.floor(seconds), "second");
+		}

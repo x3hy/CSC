@@ -10,17 +10,19 @@
 <body class="home-page">
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Dashboard</h2>
+			<h1><span class="logo"></span>/Feed</h1>
 			<span>
 				<a href="index.html">Home</a>
 				<span class="auth">
-					<a href="dashboard">Dashboard</a>
-					<a href="create.html">Create</a>
+					<a href="dashboard.html">Dashboard</a>
 					<a href="user.html">Profile</a>
 				</span>
 				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html">
+						<button id="create" >Create</button>
+					</a>
 				</span>
 				<span class="non-auth">
 					<a href="sign_in.html">Sign In</a>
@@ -43,9 +45,7 @@
 				_reason.innerText = pair[1];
 			if (pair[0] == "c")
 				_code.innerText = pair[1];
-				
 		}
-
 	</script>
 </body>
 </html>

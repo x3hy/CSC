@@ -16,12 +16,14 @@
 				<a href="index.html">Home</a>
 				<span class="auth">
 					<a href="dashboard.html"><mark>Dashboard</mark></a>
-					<a href="create.html">Create</a>
 					<a href="user.html">Profile</a>
 				</span>
 				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html">
+						<button id="create" >Create</button>
+					</a>
 				</span>
 				<span class="non-auth">
 					<a href="sign_in.html">Sign In</a>
@@ -51,27 +53,19 @@
 					<tbody>
 						<tr>
 							<td>Username:</td>
-							<td>
-								<input placeholder="oldusername" id="edit-form-username" name="username">
-							</td>
+							<td><input placeholder="oldusername" id="edit-form-username" name="username"></td>
 						</tr>
 						<tr>
 							<td>Display Name:</td>
-							<td>
-								<input placeholder="display name" id="edit-form-display" name="display">
-							</td>
+							<td><input placeholder="display name" id="edit-form-display" name="display"></td>
 						</tr>
 						<tr>
 							<td>Password:</td>
-							<td>
-								<input placeholder="new password" id="edit-form-password" name="password">
-							</td>
+							<td><input placeholder="new password" id="edit-form-password" name="password"></td>
 						</tr>
 						<tr>
 							<td>Confirm Password:</td>
-							<td>
-								<input placeholder="new password" id="edit-form-password-confirm" name="confirm">
-							</td>
+							<td><input placeholder="new password" id="edit-form-password-confirm" name="confirm"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -86,9 +80,7 @@
 		</section>
 		<hr>
 		<div class="admin">
-			<p>
-				You are an <strong>Admin</strong>, you have special access to the database, below are some admin only features:
-			</p>
+			<p>You are an <strong>Admin</strong>, you have special access to the database, below are some admin only features:</p>
 			<h2 class="left">Users:</h2>
 			<table class="left" id="users-table">
 				<thead>

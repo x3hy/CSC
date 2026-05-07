@@ -97,8 +97,7 @@ FEEDBACK:
 [2026/04/24] | samanthaa - instead of showing accending and decending on the table names you should put the actual icons of up and down arrows. [DONE]
 [2026/04/24] | jono - too many request headers sent to database about authentication, instead you should cache it locally and use that value, only updating it on sign_in.
 [2026/04/24] | samanthaa - instead of checking the authentication during sign in, you could instead check it during session validation that way the user only has to reload the page to load new admin permissions.
-
-
+[2026/05/01] | Daniel - the comments count button should show something other then comments, such as responses.
 BUGS:
 
 <br />

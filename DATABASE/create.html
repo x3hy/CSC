@@ -3,9 +3,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title id="title">Home</title>
+	<title id="title">Create</title>
 	<link rel=stylesheet href="src/styles.css">
 	<script src="src/public/index.js"></script>
+	<script defer src="src/public/create.js"></script>
 	<script defer>
 		validate_session_permanence()
 	</script>
@@ -13,17 +14,19 @@
 <body class="home-page">
 	<header>
 		<nav>
-			<h1><span class="logo"></span>/Create</h1>
+			<h1><span class="logo"></span>/Feed</h1>
 			<span>
 				<a href="index.html">Home</a>
 				<span class="auth">
 					<a href="dashboard.html">Dashboard</a>
-					<a href="create.html"><mark>Create</mark></a>
 					<a href="user.html">Profile</a>
 				</span>
 				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html">
+						<button id="create"><mark>Create</mark></button>
+					</a>
 				</span>
 				<span class="non-auth">
 					<a href="sign_in.html">Sign In</a>
@@ -32,5 +35,22 @@
 			</span>
 		</nav>
 	</header>
+	<section id="post-info">
+		<hr>
+		<!-- Quote -->
+		<p>Quoted Post:</p>
+		<i id="post-quote"><blockquote>
+			<p id="post-message">quoted message</p>
+			<sub>
+				Posted by 
+				<b id="post-user">USER</b>, <b id="post-time">TIME</b> ago.
+			</sub>
+		</blockquote></i>
+	</section>
+	<hr>
+	<article>
+		<textarea placeholder="Type your post here" id="form-content"></textarea>
+		<button id="form-submit">Post</button> <button id="form-cancel">Cancel (Open feed)</button>
+	</article>
 </body>
 </html>

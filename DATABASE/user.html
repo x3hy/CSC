@@ -13,17 +13,19 @@
 <body class="home-page">
 	<header>
 		<nav>
-			<h1><span class="logo"></span>/User</h1>
+			<h1><span class="logo"></span>/Feed</h1>
 			<span>
 				<a href="index.html">Home</a>
 				<span class="auth">
 					<a href="dashboard.html">Dashboard</a>
-					<a href="create.html">Create</a>
 					<a href="user.html"><mark>Profile</mark></a>
 				</span>
 				<a href="feed.html">Feed</a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html">
+						<button id="create" >Create</button>
+					</a>
 				</span>
 				<span class="non-auth">
 					<a href="sign_in.html">Sign In</a>
@@ -32,5 +34,9 @@
 			</span>
 		</nav>
 	</header>
+	<hr>
+	<section>
+		This page is unavailable as it is a work in progress! Thank you for understanding!
+	</section>
 </body>
 </html>

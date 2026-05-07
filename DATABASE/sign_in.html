@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title id="title"></title>
+	<title id="title">Sign In</title>
 	<link rel=stylesheet href="src/styles.css">
 	<script defer src="src/public/index.js"></script>
 	<script defer src="src/public/login.js"></script>
@@ -12,29 +12,32 @@
 	<!-- Login form -->
 	<header>
 		<nav>
-			<h2><span class="logo"></span>/Dashboard</h2>
+			<h1><span class="logo"></span>/Feed</h1>
 			<span>
 				<a href="index.html">Home</a>
 				<span class="auth">
-					<a href="dashboard">Dashboard</a>
-					<a href="create.html">Create</a>
+					<a href="dashboard.html">Dashboard</a>
 					<a href="user.html">Profile</a>
 				</span>
-				<a href="feed.html">Feed</a>
+				<a href="feed.html"><mark>Feed</mark></a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html">
+						<button id="create" >Create</button>
+					</a>
 				</span>
 				<span class="non-auth">
-					<a href="sign_in.html"><mark>Sign In</mark></a>
-					<a href="sign_in.html?sign=up"><mark>Sign Up</mark></a>
+					<a href="sign_in.html">Sign In</a>
+					<a href="sign_in.html?sign=up">Sign Up</a>
 				</span>
 			</span>
 		</nav>
 		<section>
+			Please remember your username and password, part of our privacy policy ensures that if you forget your password, your account is locked forever.
+		</section>
+		<section>
 			<form id="login-form" class="form-sign-in">
-				<center>
 					<h2 id="login-form-header"></h2>
-				</center>
 
 				<!-- *Name options -->
 				<table>

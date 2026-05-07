@@ -1,15 +1,43 @@
-/*@import "mvp.css";*/
-
 /* Settings */
 :root {
 	--sign-up: "Sign Up";
 	--sign-in: "Sign In";
-	--project-name: "AS91902";
+	--project-name: "Quackers";
+	--background: white;
+	--foreground: black;
+	--link: blue;
+	--accent: green;
+	--accent-text: white;
+	--warning: red;
+	--warning-text: white;
+	--table-even: white;
+	--table-odd: rgba(0,0,0,0.25);
+	--up-icon: "▴";
+	--down-icon: "▾";
 }
 
-.logo::before {
-	content: var(--project-name);
+body {
+	background: var(--background);
+	color: var(--foreground);
+	width: fit-content
 }
+
+mark,
+.accent,
+.up.active {
+	background:var(--accent);
+	color: var(--accent-text);
+}
+
+.warning,
+.down.active {
+	background: var(--warning);
+	color: var(--warning-text);
+}
+
+.logo::before {content: var(--project-name)}
+.up::before {content: var(--up-icon)}
+.down::before {content: var(--down-icon)}
 
 /* Login form styles */
 .login-page {
@@ -31,39 +59,75 @@
 
 .auth, .admin, #login-form-errors {display:none;}
 
-
 /* table stuff */
 th {user-select:none}
 th.sorted-asc::after {
-	content: "▴";
+	content: var(--up-icon);
 	margin-left: 1ch;
 }
 th.sorted-desc::after {
-	content: "▾";
+	content: var(--down-icon);
 	margin-left: 1ch;
 }
 
-svg path { fill: var(--color-link)};
-
+* {box-sizing:border-box;}
+svg path {fill: var(--color-link)}
 .word-two {display:none}
 .switch .word-two {display: auto}
 .switch .word-one {display: none;}
-
 td {padding: 2px;}
+table tr:nth-child(even) {background-color: var(--table-even);}
+table tr:nth-child(odd) {background-color: var(--table-odd);}
+p, h1, h2, h3, h4, h5, h6 {padding:0px;margin:0px;}
+nav {
+	position: sticky;
+	top: 0;
+	background: var(--background);
+}
 
 thead tr, thead th{
-	background: black;
+	background: var(--foreground);
 	color:white;
-	outline: 1px solid black;
+	outline: 1px solid var(--foreground);
 	text-align:left;
-	
 }
 
-tbody tr {
-	outline: 1px solid black;
-	margin:0px;
+tbody tr {margin:0px;}
+
+span h1,
+span h2,
+span h3,
+span h4,
+span h5,
+span h6 {display:inline;}
+
+sub {
+	opacity:0.5;
 }
 
-table tr:nth-child(even) {
-  background-color: rgba(0,0,0,0.25);
+i blockquote {
+	border-left: solid 5px var(--accent);
+	padding: 3px 6px;
+}
+
+table tbody tr td {
+	vertical-align: top;
+	pre {
+		border: solid 1px var(--foreground);
+		margin:0px;
+		padding: 5px;
+	}
+}
+
+
+article textarea {
+	resize: vertical;
+	width:100%;
+	min-height:20vh;
+}
+
+a {
+	color:var(--link);
+	text-decoration: underline;
+	cursor: pointer;
 }

@@ -38,6 +38,7 @@ create_table(
 	is_upvote $BOOL_VALUE,
 	user_id $FOREIGN_ID_VALUE,
 	post_id $FOREIGN_ID_VALUE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ");
 
@@ -82,15 +83,16 @@ for ($i = 1; $i <= $data_amount; $i++){
 }
 
 $post_count = $data_amount + ($data_amount * $data_amount);
-echo "created <i>$post_count</i> posts<br>";
 
-// upvote some posts
-for ($i = 1; $i <= $data_amount*$data_amount*$data_amount; $i++){
-	insert_into_table("votes", [
-		"user_id" => mt_rand(1, $data_amount),
-		"post_id" => mt_rand(1, $post_count),
-		"is_upvote" => random_int(0, 1) ? true : false
-	]);
+// Create some votes
+for ($i = 1; $i <= $post_count * $data_amount; $i++){
+	$user_id = mt_rand(1, $data_amount);
+	$post_id = mt_rand(1, $post_count);
+	if (vote_exist($post_id, $user_id) == false){
+		if(mt_rand(0, 1)){
+			upvote_post($post_id, $user_id);
+		} else downvote_post($post_id, $user_id);
+	}
 }
 
 // make user[1] an admin:

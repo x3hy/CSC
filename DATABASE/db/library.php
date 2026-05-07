@@ -228,7 +228,106 @@ function get_property_by_id($table, $id, array $props) {
     return $return;
 }
 
+function get_upvote_by_user_id(int $user_id, int $post_id){
+	global $conn;
+	
+	$stmp = $conn->prepare("
+		SELECT is_upvote
+		FROM votes
+		WHERE user_id = ?
+			AND post_id = ?
+	");
+	
+	if (!$stmp)
+		return false;
+	
+	
+	$stmp->bind_param("ii", $user_id, $post_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	
+	$values = $result->fetch_assoc();
+	$out = $values["is_upvote"];
+	$stmp->close();
+	return $out;
+}
 
+// does a given vote already exist?
+function vote_exist(int $post_id, int $user_id){
+	global $conn;
+	$stmp = $conn->prepare("
+		SELECT id
+		FROM votes
+		WHERE post_id = ?
+			AND user_id = ?
+	");
+	
+	$stmp->bind_param("ii", $post_id, $user_id);
+	$stmp->execute();
+	$result = $stmp->get_result();
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	
+	$values = $result->fetch_assoc();
+	$out = $values["id"];
+	$stmp->close();
+	return $out;
+}
+
+// Removes the vote on a post (an unvoted post)
+function remove_vote(int $post_id, int $user_id){
+	global $conn;
+	if (!vote_exist($post_id, $user_id))
+		return true;
+	
+	$stmp = $conn->prepare("
+		DELETE
+		FROM votes
+		WHERE post_id = ? 
+			AND user_id = ?
+	");
+	$stmp->bind_param("ii", $post_id, $user_id);
+	$stmp->execute();
+	$ret = $stmp->affected_rows > 0;
+	$stmp->close();
+	return $ret;
+}
+
+// Upvotes a given post
+function upvote_post(int $post_id, int $user_id){
+	global $conn;
+	if (vote_exist($post_id, $user_id))
+		remove_vote($post_id, $user_id);
+	
+	$ret = insert_into_table("votes", [
+		"is_upvote" => true,
+		"user_id" => $user_id,
+		"post_id" => $post_id
+	]);
+	return $ret;
+}
+
+// Downvotes a given post
+function downvote_post(int $post_id, int $user_id){
+	global $conn;
+	if (vote_exist($post_id, $user_id))
+		remove_vote($post_id, $user_id);
+		
+	return insert_into_table("votes", [
+		"is_upvote" => false,
+		"user_id" => $user_id,
+		"post_id" => $post_id
+	]);
+}
+
+// this function breaks sometimes, this is why it
+// has more error catching than other functions
 function delete_row_by_id($table, $id) {
     global $conn;
 	
@@ -318,7 +417,47 @@ function get_properties_from_table($table, array $props) {
 
     return $data;
 }
+
+
+function post_owner($post_id) {
+    global $conn;
+
+    $stmt = $conn->prepare("
+        SELECT user_id
+        FROM posts
+		WHERE id = ?
+    ");
+
+    if (!$stmt) {
+        return false;
+    }
 	
+	$stmt->bind_param("i", $post_id);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+	if ($result->num_rows === 0){
+		$stmp->close();
+		return false;
+	}
+	
+	$out = $result->fetch_assoc();
+    $stmt->close();
+    return $out["user_id"];
+}
+	
+
+function delete_post($user_id, $post_id){
+	$owner = post_owner($post_id);
+	if ($owner == false)
+		// Post does not exist
+		return false;
+	else if ($owner != $user_id)
+		// User does not match post
+		return false;
+	return delete_row_by_id("posts", $post_id);
+}
+
 
 function validate_password($password)
 {
@@ -620,7 +759,6 @@ function user_exist(string $username, string $hashed_password)
     
 	return $user['id'];
 }
-
 
 // returns a users id if they exist
 function username_exist(string $username)

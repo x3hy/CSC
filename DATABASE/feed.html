@@ -16,12 +16,14 @@
 				<a href="index.html">Home</a>
 				<span class="auth">
 					<a href="dashboard.html">Dashboard</a>
-					<a href="create.html">Create</a>
 					<a href="user.html">Profile</a>
 				</span>
 				<a href="feed.html"><mark>Feed</mark></a>
 				<span class="auth">
-					<a onclick="sign_out();open_home()">Sign out</a>
+					<button onclick="sign_out();open_home()">Sign out</button>
+					<a href="create.html" id="create">
+						<button>Create</button>
+					</a>
 				</span>
 				<span class="non-auth">
 					<a href="sign_in.html">Sign In</a>
@@ -29,13 +31,18 @@
 				</span>
 			</span>
 		</nav>
+		<hr>
 		<section>
 			<p id="post-path"></p>
-			<p id="body">Welcome to the feed! This page shows all posts on the <span class="logo"></span> platform!</p>
+			<p id="body">
+				Welcome to the feed! This page shows all posts on the <span class="logo"></span> platform! This page lets you
+				create posts too, <span class="non-auth">sign in and</span> use the "create" button above to create a post onto the current viewed post. If a post has 
+				no comments press the "Comment first" button to comment!
+			</p>
 			<table id="feed" class="left">
 				<thead>
 					<th>#</th>
-					<th># Comments:</th>
+					<th class="auth">Vote</th>
 					<th>Score</th>
 					<th>Poster</th>
 					<th>Description</th>
@@ -46,6 +53,7 @@
 				</tbody>
 			</table>
 		</section>
+		<p class="auth">To create a post on the current level; press the "<i>Create</i>" button on the topbar!</p>
 	</header>
 </body>
 </html>
